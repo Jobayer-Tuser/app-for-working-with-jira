@@ -1,4 +1,4 @@
-<h1><?php echo e($name); ?></h1>
+<h1><?php echo e(dd($name)); ?></h1>
 
 
 <?php 

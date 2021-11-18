@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Http\Api;
 
 use App\Repositories;
 
-class ZiraAPI {
+class JiraApiController {
 
     /**
      * All credential for zira api

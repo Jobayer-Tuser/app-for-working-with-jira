@@ -1,10 +1,10 @@
 <?php
 
-namespace App;
+namespace App\Repositories;
 
 use Unirest\Request as Request;
 
-class Repositories {
+class JiraApiRepository {
 
     private $email; 
     private $password;
@@ -20,7 +20,7 @@ class Repositories {
 
     }
     
-    public function parseAllData() {
+    public function parseAllJiraValues() {
 
         
         Request::auth( $this->email, $this->password );
@@ -29,16 +29,16 @@ class Repositories {
 
         foreach($response->body->issues AS $issues)
         {
-            // dump( $issues->fields->customfield_10020 );
+            // dump( $issues->fields->assignee );
 
             $requiredData = array(
                 'project_name'        => $issues->fields->project->name,
                 'sprint_name'         => $issues->fields->customfield_10020, // this field has multiple array need to check
                 'task_current_status' => $issues->fields->status->name,
                 'task_name'           => $issues->fields->summary,
-                'asigned_person'      => $issues->fields->assignee->displayName,
-                'task_start_date'     => $issues->fields->customfield_10020[0]->startDate,
-                'tast_end_date'       => $issues->fields->customfield_10020[0]->endDate,
+                'asigned_person'      => $issues->fields->assignee->displayName ?? null,
+                'task_start_date'     => $issues->fields->customfield_10020[1]->startDate ?? null,
+                'tast_end_date'       => $issues->fields->customfield_10020[1]->endDate ?? null,
             );
 
             dump( $requiredData );

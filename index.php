@@ -7,11 +7,7 @@ ini_set('display_errors', 1);
 error_reporting(-1);
 
 require_once './vendor/autoload.php';
-
-use Jenssegers\Blade\Blade;
-use App\Database;
-use App\Repositories;
-use App\ZiraAPI;
+use App\Http\Controller\Controller;
 
     
 $email      = 'nirjhor@joomshaper.com'; 
@@ -22,12 +18,6 @@ $baseUrl    = "https://ollyo.atlassian.net/rest/api/3/";
 $requestUrl = "search?jql=project=". $currentProjectId;    
 $finalUrl   = $baseUrl . $requestUrl;   
 
-$ziraApi = new ZiraAPI();
-
-// $ziraApi->getProjectInfo( $email, $password, $headers, $finalUrl);
-
-
-$blade = new Blade('resource/views', 'resource/cache');
-
-echo $blade->render('homepage', ['name' => 'John Doe']);
+$ctrl = new Controller;
+dd($ctrl->getDataFromDB());
 
