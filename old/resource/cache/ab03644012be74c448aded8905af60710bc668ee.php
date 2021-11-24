@@ -1,1 +1,0 @@
-<h1><?php echo e($name); ?></h1><?php /**PATH /home/jobayer/Work_File/zira-api/views/homepage.blade.php ENDPATH**/ ?>
