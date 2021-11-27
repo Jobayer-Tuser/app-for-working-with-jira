@@ -18,6 +18,7 @@ class CreateProjectsTable extends Migration
             $table->string('project_id', 127);
             $table->string('project_key', 127);
             $table->string('project_name', 255);
+            $table->string('project_type', 127)->nullable();
             $table->enum('project_status_on_pmo', ['Tracked', 'Untracked'])->default('Untracked');
             $table->timestamps();
         });

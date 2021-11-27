@@ -3,10 +3,17 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Http;
+use App\Http\Controllers\Api\JiraApiController;
 
 class DashboardController extends Controller
 {
+    protected $jiraApi;
+
+    public function __construct(JiraApiController $jiraApiController)
+    {
+        $this->jiraApi = $jiraApiController;
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -14,39 +21,9 @@ class DashboardController extends Controller
      */
     public function index()
     {
+        $data['projects'] = $this->jiraApi->fetchAllProjectsFromDB();
 
-        $email      = 'nirjhor@joomshaper.com';
-        $password   = 'f24V97nmlmBsnH5reM0mD42E';
-        $currentProjectId = "CF7";
-        $headers    = array('Accept' => 'application/json');
-        $baseUrl    = "https://ollyo.atlassian.net/rest/api/3/";
-        $requestUrl = "search?jql=project=". $currentProjectId;
-        $finalUrl   = $baseUrl . $requestUrl;
-
-        $email = "nirjhor@joomshaper.com";
-        $password = "f24V97nmlmBsnH5reM0mD42E";
-        $url = "https://ollyo.atlassian.net/rest/api/3/search?jql=project=CF7";
-
-        $response = Http::withBasicAuth($email, $password)->get($url)->body();
-        $response = json_decode($response);
-
-        foreach($response->issues AS $issues)
-        {
-            $requiredData = array(
-                'project_name'        => $issues->fields->project->name,
-                'sprint_name'         => $issues->fields->customfield_10020, // this field has multiple array need to check
-                'task_current_status' => $issues->fields->status->name,
-                'task_name'           => $issues->fields->summary,
-                'asigned_person'      => $issues->fields->assignee->displayName ?? null,
-                'task_start_date'     => $issues->fields->customfield_10020[1]->startDate ?? null,
-                'tast_end_date'       => $issues->fields->customfield_10020[1]->endDate ?? null,
-            );
-
-            echo "<pre>";
-            print_r( $requiredData  );
-            echo "</pre>";
-        }
-        return view('projects.layouts.master');
+        return view('projects.index', $data);
     }
 
     /**
