@@ -22,8 +22,8 @@ class CreateDailyTasksTable extends Migration
             $table->string('task_status', 127);
             $table->text('task_summary');
             $table->string('assignee');
-            $table->string('task_start_date');
-            $table->string('task_end_date');
+            $table->string('task_start_date')->nullable();
+            $table->string('task_end_date')->nullable();
             $table->timestamps();
         });
     }

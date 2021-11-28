@@ -56,6 +56,6 @@ class JiraApiController extends Controller
 
     public function insertDailyTask()
     {
-        
+        return $this->jiraRepo->getProjectDetails();
     }
 }

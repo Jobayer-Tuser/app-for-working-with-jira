@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\DashboardController;
+use App\Http\Controllers\DailyTaskController;
 
 /*
 |--------------------------------------------------------------------------
@@ -20,3 +21,4 @@ Route::get('/', function () {
 
 
 Route::resource('projects', DashboardController::class);
+Route::get('task/{id}', [DailyTaskController::class, 'index'])->name('task.list');

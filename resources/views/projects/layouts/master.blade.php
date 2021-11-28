@@ -28,7 +28,7 @@
     <!-- END GLOBAL MANDATORY STYLES -->
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-
+    @include('projects.layouts._extracss')
     <style>
         .layout-px-spacing {
             min-height: calc(100vh - 166px)!important;
@@ -88,7 +88,7 @@
     </script>
     <script src="{{ asset( 'assets/js/custom.js' ) }}"></script>
     <!-- END GLOBAL MANDATORY SCRIPTS -->
-
+    @include('projects.layouts._extrajs')
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
     @stack('script');
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->

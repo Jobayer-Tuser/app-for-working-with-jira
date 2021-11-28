@@ -3,8 +3,9 @@
 namespace App\Repositories;
 
 use Illuminate\Support\Facades\Http;
-use App\Http\Controller\Controller;
 use App\Interfaces\JiraApiRepositoryInterface;
+use App\Models\DailyTask;
+use App\Models\Project;
 
 class JiraApiRepository implements JiraApiRepositoryInterface
 {
@@ -22,7 +23,7 @@ class JiraApiRepository implements JiraApiRepositoryInterface
         $this->headers          = array('Accept' => 'application/json');
         $this->password         = env('JIRA_API_PASS');
         $this->currentProjectId = "CF7";
-        $this->requestUrl       = env('JIRA_API_REQUEST_URL') . $this->currentProjectId;
+        $this->requestUrl       = env('JIRA_API_REQUEST_URL');
         $this->finalUrl         = $this->baseUrl . $this->requestUrl;
     }
 
@@ -30,30 +31,50 @@ class JiraApiRepository implements JiraApiRepositoryInterface
     {
         $url = $this->baseUrl. 'project';
         return $response = $this->getJiraApiResponse( $this->email, $this->password, $url );
-
     }
 
-    public function getProjectDetailsByKey()
+    public function getProjectDetails()
     {
-        $response = $this->getJiraApiResponse($this->email, $this->password, $this->finalUrl);
+        $projectKeys = Project::select('project_key')->get();
 
-        
-        foreach($response->issues AS $issues)
-        {
-            $requiredData = array(
-                'project_name'        => $issues->fields->project->name,
-                'sprint_name'         => $issues->fields->customfield_10020, // this field has multiple array need to check
-                'task_current_status' => $issues->fields->status->name,
-                'task_name'           => $issues->fields->summary,
-                'asigned_person'      => $issues->fields->assignee->displayName ?? null,
-                'task_start_date'     => $issues->fields->customfield_10020[1]->startDate ?? null,
-                'tast_end_date'       => $issues->fields->customfield_10020[1]->endDate ?? null,
-            );
+        foreach ( $projectKeys as $eachKey) {
+            $url = $this->finalUrl . $eachKey->project_key;
+             $response = $this->getJiraApiResponse($this->email, $this->password, $url);
 
-            echo "<pre>";
-            print_r( $requiredData  );
-            echo "</pre>";
+            // return $response->issues;
+            if (isset($response->issues)){
+                foreach($response->issues AS $issue)
+                {
+                    if (isset($issue->fields->customfield_10020) && ! empty($issue->fields->customfield_10020))
+                    {
+                        foreach ( $issue->fields->customfield_10020 as $key => $fields){
+                            if ($fields->state == 'active'){
+
+                                $sprintName = $fields->name;
+                                $state      = $fields->state;
+                                $startDate  = $fields->startDate;
+                                $endDate    = $fields->endDate;
+                            }
+                        }
+                    }
+
+                    $dailyTask = new DailyTask();
+                    $dailyTask->project_id      = $issue->fields->project->id;
+                    $dailyTask->project_key     = $issue->fields->project->key;
+                    $dailyTask->project_name    = $issue->fields->project->name;
+                    $dailyTask->sprint_name     = $sprintName ?? 'No Name';
+                    $dailyTask->task_status     = $issue->fields->status->name;
+                    $dailyTask->task_summary    = $issue->fields->summary;
+                    $dailyTask->assignee        = $issue->fields->assignee->displayName ?? 'No One Assigned';
+                    $dailyTask->task_start_date = $startDate ?? null;
+                    $dailyTask->task_end_date   = $endDate ?? null;
+                    $dailyTask->created_at      = date('Y-m-d H:i:s');
+                    $dailyTask->save();
+
+                }
+            }
         }
+
     }
 
 
