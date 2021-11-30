@@ -11,7 +11,16 @@ const mix = require('laravel-mix');
  |
  */
 
+ mix.options({
+    processCssUrls: false
+});
+
 mix.js('resources/js/app.js', 'public/js')
     .postCss('resources/css/app.css', 'public/css', [
         //
     ]);
+
+mix.sass('resources/sass/assets/structure.scss', 'public/assets/css/')
+    .sass('resources/sass/assets/loader.scss', 'public/assets/css/')
+    .sass('resources/sass/assets/main.scss', 'public/assets/css/')
+    .sass('resources/sass/assets/scrollspyNav.scss', 'public/assets/css/')

@@ -14,6 +14,6 @@ class DailyTaskController extends Controller
 
         $data['tasks'] = DailyTask::where('project_key', $key)->get();
 
-        return view('projects.tasks.index', $data);
+        return view('pages.tasks.index', $data);
     }
 }
