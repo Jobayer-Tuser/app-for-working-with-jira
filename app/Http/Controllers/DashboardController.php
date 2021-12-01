@@ -24,7 +24,7 @@ class DashboardController extends Controller
         $data['projects'] = $this->jiraApi->fetchAllProjectsFromDB();
         // return $this->jiraApi->insertDailyTask();
 
-        return view('projects.index', $data);
+        return view('pages.project.index', $data);
     }
 
     /**

@@ -4,9 +4,91 @@
 @section('breadcrumb-sub', 'List')
 
 @section('content')
+
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
+        <div id="tableLight" class="col-lg-12 col-12 layout-spacing">
+            <div class="statbox widget box box-shadow">
+                <div class="widget-header">
+                    <div class="row">
+                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                            <h4>Find Task By</h4>
+                        </div>
+                    </div>
+                </div>
+                <div class="widget-content widget-content-area">
+                    <form action="{{ route('task.list', $projectKey) }}" method="">
 
+                        {{-- @csrf --}}
+                        {{-- <input type="hidden" name="projectKey" value="{{ $projectKey }}"/> --}}
+                        <div class="table">
+                            <table class="table table-hover table-light mb-4">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Person Name</th>
+                                        <th class="text-center">Task Status</th>
+                                        <th class="text-center">Sprint Name</th>
+                                        <th class="text-center">Deparment</th>
+                                        <th></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td class="text-center">
+                                            <div class="form-group">
+                                                <select name="assignee" class="selectpicker" data-width="fit">
+                                                    <option vlaue="0">Assignee </option>
+                                                    @if (!empty($assignedPerson))
+                                                        @foreach ( $assignedPerson as  $each)
+                                                            <option value="{{ $each->assignee }}">{{ $each->assignee }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-group">
+                                                <select name="tastState" class="selectpicker" data-width="fit">
+                                                    <option vlaue="0">Task Status </option>
+                                                    @if(!empty($tastState))
+                                                        @foreach ($tastState as $each)
+                                                            <option value="{{ $each->state_name }}">{{ $each->state_name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-group">
+                                                <select name="spintName" class="selectpicker" data-width="fit">
+                                                    <option vlaue="">Sprint</option>
+                                                    @if(!empty($sprintName))
+                                                        @foreach ($sprintName as $each)
+                                                            <option value="{{ $each->sprint_name }}">{{ $each->sprint_name }}</option>
+                                                        @endforeach
+                                                    @endif
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td class="text-center">
+                                            <div class="form-group">
+                                                <select class="selectpicker" data-width="fit">
+                                                    <option vlaue="0">Department </option>
+
+                                                </select>
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <button type="submit" class="btn btn-sm btn-primary mb-3">Search</button>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
         <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
             <div class="widget-content widget-content-area br-6">
                 <table id="invoice-list" class="table table-hover" style="width:100%">
@@ -58,16 +140,19 @@
                 </table>
             </div>
         </div>
-
-        <div class="col-xl-12 col-lg-12 col-md-12 col-12 layout-spacing">
-            <div class="widget widget-content-area br-4">
-                <div class="widget-one ">
-                    <h6>Kick Start you new project with ease!</h6>
-                    <p class="mb-0 mt-3">With CORK starter kit, you can begin your work without any hassle. The starter page is highly optimized which gives you freedom to start with minimal code and add only the desired components and plugins required for your project.</p>
-                </div>
-            </div>
-        </div>
     </div>
 </div>
+
+@push('script')
+    {{-- <script type="text/javascript">
+    ;(function($){
+        $(document).on('change', '[name="assignee"]', function() {
+            let assigneeName = $(this).val;
+            console.log(assigneeName)
+        });
+
+    })(jQuery);
+    </script> --}}
+@endpush
 
 @endsection

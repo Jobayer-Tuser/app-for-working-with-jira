@@ -58,4 +58,9 @@ class JiraApiController extends Controller
     {
         return $this->jiraRepo->getProjectDetails();
     }
+
+    public function getFilterOption()
+    {
+
+    }
 }

@@ -2,17 +2,58 @@
 
 namespace App\Http\Controllers;
 
+use Illuminate\Support\Facades\DB;
 use Illuminate\Http\Request;
 use App\Models\DailyTask;
 
 class DailyTaskController extends Controller
 {
 
-    public function index($key)
+    public function index(Request $request, $key)
     {
-        // return $key;
+        $query = DailyTask::where('project_key', $key);
 
-        $data['tasks'] = DailyTask::where('project_key', $key)->get();
+        if($request->has('assignee')) {
+            $query->where('assignee', $request->assignee);
+        }
+        if($request->has('tastState')){
+            $query->where('task_status', $request->tastState);
+        }
+        if($request->has('spintName')){
+            $query->where('sprint_name', $request->spintName);
+        }
+
+        $data['tasks']          = $query->get();
+        $data['tastState']      = DB::table('task_state')->select('state_name')->where('state_status', '=', 'active')->get();
+        $data['sprintName']     = $query->select('sprint_name')->distinct()->get();
+        $data['projectKey']     = $key;
+        $data['assignedPerson'] = $query->select('assignee')->distinct()->get();
+
+        return view('pages.tasks.index', $data);
+    }
+
+    public function searchByOption( Request $request)
+    {
+        return $query = DailyTask::orderBy('created_at', 'ASC')->get();
+
+        if($request->projectKey){
+            $query->where('project_key', $request->projectKey);
+        }
+        if($request->has('assignee')) {
+            $query->where('assignee', '=', $request->assignee);
+        }
+        if($request->has('tastState')){
+            $query->where('task_status', '=', $request->tastState);
+        }
+        if($request->has('spintName')){
+            $query->where('sprint_name', '=', $request->spintName);
+        }
+
+        return $data['tasks'] = $query->get();
+        $data['projectKey']     = $request->projectKey;
+        $data['assignedPerson'] = DailyTask::select('assignee')->distinct()->where('project_key', $request->projectKey)->get();
+        $data['tastState'] = DB::table('task_state')->select('state_name')->where('state_status', '=', 'active')->get();
+        $data['sprintName'] = DailyTask::select('sprint_name')->distinct()->where('project_key', $request->projectKey)->get();
 
         return view('pages.tasks.index', $data);
     }
