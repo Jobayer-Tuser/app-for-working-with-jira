@@ -14,7 +14,7 @@
                 </a>
                 <ul class="submenu list-unstyled collapse show" id="jira" data-parent="#accordionExample" style="">
                     <li class="active">
-                        <a href=""> Project List </a>
+                        <a href="{{ route('project.list') }}"> Project List </a>
                     </li>
                     <li>
                         <a href=""> Today's Task </a>

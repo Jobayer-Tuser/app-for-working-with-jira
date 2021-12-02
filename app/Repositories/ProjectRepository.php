@@ -1,31 +1,32 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Repositories;
 
-use App\Http\Controllers\Controller;
-use App\Repositories\JiraApiRepository;
 use App\Models\Project;
 
-class JiraApiController extends Controller
+class ProjectRepository extends JiraApiRepository
 {
 
-    private $jiraRepo;
-
-    public function __construct(JiraApiRepository $jiraApiRepository)
-    {
-        $this->jiraRepo = $jiraApiRepository;
-    }
-
+    /**
+     * Get all project from DB
+     */
     public function fetchAllProjectsFromDB()
     {
         // return $projects = $this->jiraRepo->getAllJiraProjects();
-        $this->insertAllProjectToDB();
-        return Project::all();
+        // $this->insertAllProjectToDB();
+        return Project::select('project_id', 'project_key', 'project_name', 'project_type', 'project_status_on_pmo')->get();
     }
 
-    public function insertAllProjectToDB()
+    /**
+     * Fetch All Jira Projects From Jira Borad Via API
+     * And Update them to DB
+     * @return array
+     */
+    public function updateEveryProject()
     {
-        $projects = $this->jiraRepo->getAllJiraProjects();
+        $url = $this->baseUrl . 'project';
+        $projects = $this->getJiraApiResponse($this->email, $this->password, $url);
+
         foreach( $projects AS $eachProject) {
 
             $getProjectKey = Project::where('project_key', '=', $eachProject->key)->first();
@@ -51,16 +52,6 @@ class JiraApiController extends Controller
             }
 
         }
-
     }
 
-    public function insertDailyTask()
-    {
-        return $this->jiraRepo->getProjectDetails();
-    }
-
-    public function getFilterOption()
-    {
-
-    }
 }

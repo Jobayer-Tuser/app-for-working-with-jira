@@ -25,9 +25,9 @@ use App\Http\Controllers\ProjectController;
     Auth::routes();
 
 
-    Route::group(['middleware' => ['auth']], function() {
-        Route::get('home', [HomeController::class, 'index'])->name('home');
-        Route::get('projects', [ProjectController::class, 'index'])->name('project.list');
-        Route::get('task/{id}', [DailyTaskController::class, 'index'])->name('task.list');
+    Route::get('home', [HomeController::class, 'index'])->name('home');
+    Route::get('projects', [ProjectController::class, 'index'])->name('project.list');
+    Route::get('task/{id}', [DailyTaskController::class, 'index'])->name('task.list');
 
+    Route::group(['middleware' => ['auth']], function() {
     });
