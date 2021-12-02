@@ -32,29 +32,4 @@ class DailyTaskController extends Controller
         return view('pages.tasks.index', $data);
     }
 
-    public function searchByOption( Request $request)
-    {
-        return $query = DailyTask::orderBy('created_at', 'ASC')->get();
-
-        if($request->projectKey){
-            $query->where('project_key', $request->projectKey);
-        }
-        if($request->has('assignee')) {
-            $query->where('assignee', '=', $request->assignee);
-        }
-        if($request->has('tastState')){
-            $query->where('task_status', '=', $request->tastState);
-        }
-        if($request->has('spintName')){
-            $query->where('sprint_name', '=', $request->spintName);
-        }
-
-        return $data['tasks'] = $query->get();
-        $data['projectKey']     = $request->projectKey;
-        $data['assignedPerson'] = DailyTask::select('assignee')->distinct()->where('project_key', $request->projectKey)->get();
-        $data['tastState'] = DB::table('task_state')->select('state_name')->where('state_status', '=', 'active')->get();
-        $data['sprintName'] = DailyTask::select('sprint_name')->distinct()->where('project_key', $request->projectKey)->get();
-
-        return view('pages.tasks.index', $data);
-    }
 }

@@ -3,16 +3,9 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
-use App\Http\Controllers\Api\JiraApiController;
 
 class DashboardController extends Controller
 {
-    protected $jiraApi;
-
-    public function __construct(JiraApiController $jiraApiController)
-    {
-        $this->jiraApi = $jiraApiController;
-    }
 
     /**
      * Display a listing of the resource.
@@ -21,10 +14,7 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $data['projects'] = $this->jiraApi->fetchAllProjectsFromDB();
-        // return $this->jiraApi->insertDailyTask();
 
-        return view('pages.project.index', $data);
     }
 
     /**
