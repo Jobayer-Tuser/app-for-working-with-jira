@@ -25,11 +25,11 @@
                             <table class="table table-hover table-light mb-4">
                                 <thead>
                                     <tr>
-                                        <th class="text-center">Person Name</th>
-                                        <th class="text-center">Task Status</th>
-                                        <th class="text-center">Sprint Name</th>
-                                        <th class="text-center">Deparment</th>
+                                        <th class="text-center">Project Type</th>
                                         <th></th>
+                                        <th></th>
+                                        <th></th>
+                                        <th>Action</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -38,46 +38,18 @@
                                             <div class="form-group">
                                                 <select name="assignee" class="selectpicker" data-width="fit">
                                                     <option vlaue="0">Assignee </option>
-                                                    @if (!empty($assignedPerson))
-                                                        @foreach ( $assignedPerson as  $each)
-                                                            <option value="{{ $each->assignee }}">{{ $each->assignee }}</option>
+                                                    @if (!empty($projectType))
+                                                        @foreach ( $projectType as  $each)
+                                                            @if (empty($each->project_type)) continue @endif
+                                                            <option value="{{ $each->project_type }}">{{ $each->project_type }}</option>
                                                         @endforeach
                                                     @endif
                                                 </select>
                                             </div>
                                         </td>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select name="tastState" class="selectpicker" data-width="fit">
-                                                    <option vlaue="0">Task Status </option>
-                                                    @if(!empty($tastState))
-                                                        @foreach ($tastState as $each)
-                                                            <option value="{{ $each->state_name }}">{{ $each->state_name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select name="spintName" class="selectpicker" data-width="fit">
-                                                    <option vlaue="">Sprint</option>
-                                                    @if(!empty($sprintName))
-                                                        @foreach ($sprintName as $each)
-                                                            <option value="{{ $each->sprint_name }}">{{ $each->sprint_name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select class="selectpicker" data-width="fit">
-                                                    <option vlaue="0">Department </option>
-
-                                                </select>
-                                            </div>
-                                        </td>
+                                        <td></td>
+                                        <td></td>
+                                        <td></td>
                                         <td>
                                             <button type="submit" class="btn btn-sm btn-primary mb-3">Search</button>
                                         </td>
@@ -111,9 +83,11 @@
                                     <td class="checkbox-column"> 1 </td>
                                     <td><a href="{{ route('task.list', $each->project_key) }}"><span class="inv-number">#{{ $each->project_id }}</span></a></td>
                                     <td><span class="inv-amount">{{ $each->project_name }}</span></td>
-                                    <td><span class="badge badge-dark ml-2">{{ $each->project_type }}</span></td>
                                     <td><span class="badge badge-success">{{ $each->project_key }}</span></td>
-                                    <td><span class="badge badge-danger">{{ $each->project_status_on_pmo }}</span></td>
+                                    <td><span class="badge badge-dark ml-2">{{ $each->project_type }}</span></td>
+                                    <td>
+                                        <a  href="" id="changeStatus" data-url="{{ route('project.update') }}" data-id="{{  $each->project_id }}" data-status="{{  $each->project_status_on_pmo }}" ><span class="badge badge-danger">{{ $each->project_status_on_pmo }}</span></a>
+                                    </td>
                                     <td>
                                         <div class="dropdown">
                                             <a class="dropdown-toggle" href="#" role="button" id="dropdownMenuLink2" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
@@ -134,4 +108,35 @@
         </div>
     </div>
 </div>
+
+@push('script')
+<script>
+    (function($){
+
+        //Ajax function for project status change
+        $(document).on('click', '#changeStatus', function(event){
+            event.preventDefault();
+            let id     = $('#changeStatus').data('id');
+            let url    = $('#changeStatus').data('url');
+            let status = $('#changeStatus').data('status');
+            $.ajax({
+                url    : url,
+                type   : "POST",
+                data   : {
+                    id : id,
+                    status: status,
+                },
+                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
+                success: function(response){
+                    console.log(response)
+                }
+            })
+        })
+
+        //ajax call for filter
+
+    })(jQuery);
+</script>
+@endpush
+
 @endsection

@@ -79,7 +79,7 @@ class DailyTaskRepository extends JiraApiRepository
                         $oldDailyTask->task_start_date = $startDate ?? null;
                         $oldDailyTask->task_end_date   = $endDate ?? null;
                         $oldDailyTask->created_at      = date('Y-m-d H:i:s');
-                        $oldDailyTask->update();
+                        $oldDailyTask->save();
                     } else {
 
                         # insert tha new daily task data daily_task table
@@ -108,6 +108,6 @@ class DailyTaskRepository extends JiraApiRepository
      */
     public function deleteCompleteTask()
     {
-        $taskToDelete = DailyTask::where('task_status', '=', 'Done')->destroy();
+        DailyTask::where('task_status', '=', 'Done')->destroy();
     }
 }

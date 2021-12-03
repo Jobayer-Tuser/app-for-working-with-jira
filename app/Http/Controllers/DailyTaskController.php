@@ -30,7 +30,7 @@ class DailyTaskController extends Controller
 
     public function runCronJobForTask()
     {
-        $this->jiraApi->updateDailyTask();
-        $this->jiraApi->removeCompletedTask();
+        $this->taskRepo->updateAllDailyTask();
+        $this->taskRepo->deleteCompleteTask();
     }
 }

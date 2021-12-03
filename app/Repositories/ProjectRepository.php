@@ -12,9 +12,9 @@ class ProjectRepository extends JiraApiRepository
      */
     public function fetchAllProjectsFromDB()
     {
-        // return $projects = $this->jiraRepo->getAllJiraProjects();
-        // $this->insertAllProjectToDB();
-        return Project::select('project_id', 'project_key', 'project_name', 'project_type', 'project_status_on_pmo')->get();
+        $data['projects']    = Project::select('id','project_id', 'project_key', 'project_name', 'project_type', 'project_status_on_pmo')->get();
+        $data['projectType'] = Project::select('project_type')->distinct()->get();
+        return $data;
     }
 
     /**
@@ -24,7 +24,7 @@ class ProjectRepository extends JiraApiRepository
      */
     public function updateEveryProject()
     {
-        $url = $this->baseUrl . 'project';
+        $url      = $this->baseUrl . 'project';
         $projects = $this->getJiraApiResponse($this->email, $this->password, $url);
 
         foreach( $projects AS $eachProject) {
@@ -52,6 +52,19 @@ class ProjectRepository extends JiraApiRepository
             }
 
         }
+    }
+
+    public function updateProjectStautus($status, $id)
+    {
+        $projectState = Project::where('project_id', $id)->get();
+        $projectState = $projectState[0];
+        if ( $status == 'Tracked'){
+            $projectState->project_status_on_pmo = 'Untracked';
+        }
+        if ( $status == 'Untracked') {
+            $projectState->project_status_on_pmo = 'Tracked';
+        }
+        return $projectState->save();
     }
 
 }
