@@ -7,7 +7,7 @@
 
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
-        <div id="tableLight" class="col-lg-12 col-12 layout-spacing">
+        <div class="col-lg-12 col-12 layout-spacing">
             <div class="statbox widget box box-shadow">
                 <div class="widget-header">
                     <div class="row">
@@ -18,44 +18,18 @@
                 </div>
                 <div class="widget-content widget-content-area">
                     <form action="" method="">
-
-                        {{-- @csrf --}}
-                        {{-- <input type="hidden" name="projectKey" value="{{ $projectKey }}"/> --}}
-                        <div class="table">
-                            <table class="table table-hover table-light mb-4">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Project Type</th>
-                                        <th></th>
-                                        <th></th>
-                                        <th></th>
-                                        <th>Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select name="assignee" class="selectpicker" data-width="fit">
-                                                    <option vlaue="0">Assignee </option>
-                                                    @if (!empty($projectType))
-                                                        @foreach ( $projectType as  $each)
-                                                            @if (empty($each->project_type)) continue @endif
-                                                            <option value="{{ $each->project_type }}">{{ $each->project_type }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td></td>
-                                        <td></td>
-                                        <td></td>
-                                        <td>
-                                            <button type="submit" class="btn btn-sm btn-primary mb-3">Search</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="row ml-3 mt-3">
+                            <div class="form-group">
+                                <select name="assignee" class="selectpicker" data-width="fit">
+                                    <option vlaue="0">Assignee </option>
+                                    @if (!empty($projectType))
+                                        @foreach ( $projectType as  $each)
+                                            @if (empty($each->project_type)) continue @endif
+                                            <option value="{{ $each->project_type }}">{{ $each->project_type }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
                         </div>
                     </form>
                 </div>

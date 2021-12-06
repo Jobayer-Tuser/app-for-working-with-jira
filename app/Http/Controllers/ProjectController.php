@@ -17,8 +17,8 @@ class ProjectController extends Controller
     public function index()
     {
         $value = $this->proRepo->fetchAllProjectsFromDB();
-        $data = [
-            'projects' => $value['projects'],
+        $data  = [
+            'projects'    => $value['projects'],
             'projectType' => $value['projectType'],
         ];
         return view('pages.project.index', $data);
@@ -37,4 +37,30 @@ class ProjectController extends Controller
         $this->proRepo->updateEveryProject();
     }
 
+    public function show( Request $request )
+    {
+
+        if(request()->ajax()) {
+            if(!empty($request->filter_gender)) {
+
+                // $data = DB::table('tbl_customer')
+                //     ->select('CustomerName', 'Gender', 'Address', 'City', 'PostalCode', 'Country')
+                //     ->where('Gender', $request->filter_gender)
+                //     ->where('Country', $request->filter_country)
+                //     ->get();
+            } else {
+                // $data = DB::table('tbl_customer')
+                //     ->select('CustomerName', 'Gender', 'Address', 'City', 'PostalCode', 'Country')
+                //     ->get();
+            }
+            return datatables()->of($data)->make(true);
+        }
+        $value = $this->proRepo->fetchAllProjectsFromDB();
+        $data  = [
+            'projects'    => $value['projects'],
+            'projectType' => $value['projectType'],
+        ];
+
+        return view('pages.project.show');
+    }
 }

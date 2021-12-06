@@ -7,7 +7,8 @@
 
 <div class="layout-px-spacing">
     <div class="row layout-top-spacing">
-        <div id="tableLight" class="col-lg-12 col-12 layout-spacing">
+
+        <div class="col-lg-12 col-12 layout-spacing">
             <div class="statbox widget box box-shadow">
                 <div class="widget-header">
                     <div class="row">
@@ -17,78 +18,46 @@
                     </div>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form action="{{ route('task.list', $projectKey) }}" method="">
+                    <form class="row ml-3 mt-3" action="" method="">
 
-                        {{-- @csrf --}}
-                        {{-- <input type="hidden" name="projectKey" value="{{ $projectKey }}"/> --}}
-                        <div class="table">
-                            <table class="table table-hover table-light mb-4">
-                                <thead>
-                                    <tr>
-                                        <th class="text-center">Person Name</th>
-                                        <th class="text-center">Task Status</th>
-                                        <th class="text-center">Sprint Name</th>
-                                        <th class="text-center">Deparment</th>
-                                        <th></th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select name="assignee" class="selectpicker" data-width="fit">
-                                                    <option vlaue="0">Assignee </option>
-                                                    @if (!empty($assignedPerson))
-                                                        @foreach ( $assignedPerson as  $each)
-                                                            <option value="{{ $each->assignee }}">{{ $each->assignee }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select name="tastState" class="selectpicker" data-width="fit">
-                                                    <option vlaue="0">Task Status </option>
-                                                    @if(!empty($tastState))
-                                                        @foreach ($tastState as $each)
-                                                            <option value="{{ $each->state_name }}">{{ $each->state_name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select name="spintName" class="selectpicker" data-width="fit">
-                                                    <option vlaue="">Sprint</option>
-                                                    @if(!empty($sprintName))
-                                                        @foreach ($sprintName as $each)
-                                                            <option value="{{ $each->sprint_name }}">{{ $each->sprint_name }}</option>
-                                                        @endforeach
-                                                    @endif
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td class="text-center">
-                                            <div class="form-group">
-                                                <select class="selectpicker" data-width="fit">
-                                                    <option vlaue="0">Department </option>
-
-                                                </select>
-                                            </div>
-                                        </td>
-                                        <td>
-                                            <button type="submit" class="btn btn-sm btn-primary mb-3">Search</button>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                        <div class="form-group col-md-3">
+                            <select name="assignee" class="selectpicker" data-width="fit">
+                                <option vlaue="0">Assignee </option>
+                                @if (!empty($assignedPerson))
+                                    @foreach ( $assignedPerson as  $each)
+                                        <option value="{{ $each->assignee }}">{{ $each->assignee }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
                         </div>
+
+                        <div class="form-group col-md-3">
+                            <select name="tastState" class="selectpicker" data-width="fit">
+                                <option vlaue="0">Task Status </option>
+                                @if(!empty($tastState))
+                                    @foreach ($tastState as $each)
+                                        <option value="{{ $each->state_name }}">{{ $each->state_name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
+                        <div class="form-group">
+                            <select name="spintName" class="selectpicker" data-width="fit">
+                                <option vlaue="">Sprint</option>
+                                @if(!empty($sprintName))
+                                    @foreach ($sprintName as $each)
+                                        <option value="{{ $each->sprint_name }}">{{ $each->sprint_name }}</option>
+                                    @endforeach
+                                @endif
+                            </select>
+                        </div>
+
                     </form>
                 </div>
             </div>
         </div>
+
         <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
             <div class="widget-content widget-content-area br-6">
                 <table id="invoice-list" class="table table-hover" style="width:100%">

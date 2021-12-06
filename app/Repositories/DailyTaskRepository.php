@@ -24,7 +24,7 @@ class DailyTaskRepository extends JiraApiRepository
         }
 
         $data['tasks']          = $query->get();
-        $data['tastState']      = DB::table('task_state')->select('state_name')->where('state_status', '=', 'active')->get();
+        $data['tastState']      = DailyTask::getTaskState()->get();
         $data['sprintName']     = $query->select('sprint_name')->distinct()->get();
         $data['projectKey']     = $key;
         $data['assignedPerson'] = $query->select('assignee')->distinct()->get();
