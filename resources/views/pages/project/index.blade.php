@@ -17,11 +17,11 @@
                     </div>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form action="" method="">
+                    <form action="{{ route('project.list') }}">
                         <div class="row ml-3 mt-3">
-                            <div class="form-group">
-                                <select name="assignee" class="selectpicker" data-width="fit">
-                                    <option vlaue="0">Assignee </option>
+                            <div class="form-group col-md-2">
+                                <select name="project_type" class="selectpicker" data-width="fit">
+                                    <option vlaue=""> Project Type </option>
                                     @if (!empty($projectType))
                                         @foreach ( $projectType as  $each)
                                             @if (empty($each->project_type)) continue @endif
@@ -29,6 +29,9 @@
                                         @endforeach
                                     @endif
                                 </select>
+                            </div>
+                            <div class="form-group float-right">
+                                <button type="submit" class="btn btn-sm btn-primary mb-3">Search</button>
                             </div>
                         </div>
                     </form>
@@ -82,35 +85,5 @@
         </div>
     </div>
 </div>
-
-@push('script')
-<script>
-    (function($){
-
-        //Ajax function for project status change
-        $(document).on('click', '#changeStatus', function(event){
-            event.preventDefault();
-            let id     = $('#changeStatus').data('id');
-            let url    = $('#changeStatus').data('url');
-            let status = $('#changeStatus').data('status');
-            $.ajax({
-                url    : url,
-                type   : "POST",
-                data   : {
-                    id : id,
-                    status: status,
-                },
-                headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')},
-                success: function(response){
-                    console.log(response)
-                }
-            })
-        })
-
-        //ajax call for filter
-
-    })(jQuery);
-</script>
-@endpush
 
 @endsection

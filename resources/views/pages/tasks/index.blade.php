@@ -18,41 +18,47 @@
                     </div>
                 </div>
                 <div class="widget-content widget-content-area">
-                    <form class="row ml-3 mt-3" action="" method="">
+                    <form class="" action="{{ route('task.list', $projectKey) }}">
 
-                        <div class="form-group col-md-3">
-                            <select name="assignee" class="selectpicker" data-width="fit">
-                                <option vlaue="0">Assignee </option>
-                                @if (!empty($assignedPerson))
-                                    @foreach ( $assignedPerson as  $each)
-                                        <option value="{{ $each->assignee }}">{{ $each->assignee }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
+                        @csrf
+                        <input type="hidden" name="projectKey" value="{{ $projectKey }}"/>
+                        <div class="row ml-3 mt-3">
+                            <div class="form-group ">
+                                <select name="assignee" class="selectpicker" data-width="fit">
+                                    <option vlaue="0">Assignee </option>
+                                    @if (!empty($assignedPerson))
+                                        @foreach ( $assignedPerson as  $each)
+                                            <option value="{{ $each->assignee }}">{{ $each->assignee }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+                            <div class="form-group ml-3">
+                                <select name="tastState" class="selectpicker" data-width="fit">
+                                    <option vlaue="0">Task Status </option>
+                                    @if(!empty($tastState))
+                                        @foreach ($tastState as $each)
+                                            <option value="{{ $each->state_name }}">{{ $each->state_name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+
+                            <div class="form-group ml-3">
+                                <select name="spintName" class="selectpicker" data-width="fit">
+                                    <option vlaue="">Sprint</option>
+                                    @if(!empty($sprintName))
+                                        @foreach ($sprintName as $each)
+                                            <option value="{{ $each->sprint_name }}">{{ $each->sprint_name }}</option>
+                                        @endforeach
+                                    @endif
+                                </select>
+                            </div>
+                            <div class="form-group col-md-4 mt-2">
+                                <button type="submit" class="btn btn-sm btn-primary mb-3">Search</button>
+                            </div>
                         </div>
-
-                        <div class="form-group col-md-3">
-                            <select name="tastState" class="selectpicker" data-width="fit">
-                                <option vlaue="0">Task Status </option>
-                                @if(!empty($tastState))
-                                    @foreach ($tastState as $each)
-                                        <option value="{{ $each->state_name }}">{{ $each->state_name }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
-                        <div class="form-group">
-                            <select name="spintName" class="selectpicker" data-width="fit">
-                                <option vlaue="">Sprint</option>
-                                @if(!empty($sprintName))
-                                    @foreach ($sprintName as $each)
-                                        <option value="{{ $each->sprint_name }}">{{ $each->sprint_name }}</option>
-                                    @endforeach
-                                @endif
-                            </select>
-                        </div>
-
                     </form>
                 </div>
             </div>

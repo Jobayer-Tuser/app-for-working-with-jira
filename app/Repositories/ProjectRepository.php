@@ -10,10 +10,16 @@ class ProjectRepository extends JiraApiRepository
     /**
      * Get all project from DB
      */
-    public function fetchAllProjectsFromDB()
+    public function fetchAllProjectsFromDB( $project_type = '' )
     {
         #used eloquent scope
-        $data['projects']    = Project::selectAll()->get();
+        $query = Project::query();
+
+        if ( ! empty($project_type) ) {
+
+            $query->where('project_type', $project_type);
+        }
+        $data['projects']    = $query->selectAll()->get();
         $data['projectType'] = Project::selectDistinct()->get();
         return $data;
     }

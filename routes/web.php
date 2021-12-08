@@ -26,10 +26,12 @@ use App\Http\Controllers\ProjectController;
 
 
     Route::get('home', [HomeController::class, 'index'])->name('home');
-    Route::get('projects', [ProjectController::class, 'index'])->name('project.list');
-    Route::get('project/show', [ProjectController::class, 'show'])->name('project.show');
+    Route::get('project', [ProjectController::class, 'index'])->name('project.list');
     Route::post('projects/update',[ProjectController::class, 'update'])->name('project.update');
     Route::get('task/{id}', [DailyTaskController::class, 'index'])->name('task.list');
 
     Route::group(['middleware' => ['auth']], function() {
     });
+
+    Route::post('get', [ProjectController::class, 'fetch'])->name('project.get');
+    Route::get('project/show', [ProjectController::class, 'show'])->name('project.show');
