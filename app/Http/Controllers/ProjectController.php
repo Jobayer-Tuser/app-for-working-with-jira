@@ -4,8 +4,6 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\ProjectRepository;
-use App\Models\Project;
-use DataTables;
 
 class ProjectController extends Controller
 {
@@ -37,35 +35,5 @@ class ProjectController extends Controller
     public function runCronJobForProject()
     {
         $this->proRepo->updateEveryProject();
-    }
-
-    public function show( Request $request )
-    {
-        if(request()->ajax()) {
-            $data = Project::latest()->get();
-            return DataTables::of($data)->make(true);
-        }
-
-
-        $value = $this->proRepo->fetchAllProjectsFromDB();
-        $data  = [
-            'projects'    => $value['projects'],
-            'projectType' => $value['projectType'],
-        ];
-
-        return view('pages.project.show');
-    }
-
-    public function fetch(Request $request)
-    {
-        if($request->ajax())  {
-            $data = Project::latest()->get();
-
-            // if($request->from_date != '' && $request->to_date != '') {
-            //     $data = Project::latest()->get();
-            // } else {
-            // }
-            echo json_encode($data);
-        }
     }
 }
