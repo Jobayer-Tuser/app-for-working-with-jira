@@ -6,7 +6,7 @@ use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\DailyTaskController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ProjectController;
-
+use App\Models\DailyTask;
 
 /*
 |--------------------------------------------------------------------------
@@ -26,8 +26,14 @@ use App\Http\Controllers\ProjectController;
 
 
     Route::get('home', [HomeController::class, 'index'])->name('home');
+
+    #project route
+    Route::post('project', [ProjectController::class, 'runCronJobForProject'])->name('project.sync');
     Route::get('project', [ProjectController::class, 'index'])->name('project.list');
     Route::post('projects/update',[ProjectController::class, 'update'])->name('project.update');
+
+    #task route
+    Route::post('task', [DailyTaskController::class, 'runCronJobForTask'])->name('task.sync');
     Route::get('task/{id}', [DailyTaskController::class, 'index'])->name('task.list');
 
     Route::group(['middleware' => ['auth']], function() {

@@ -12,16 +12,22 @@
             <div class="statbox widget box box-shadow">
                 <div class="widget-header">
                     <div class="row">
-                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                             <h4>Find Task By</h4>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-sm-6 col-6 mt-2">
+                            <form class="" method="POST" action="{{ route('task.sync') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-primary mb-3">Sync</button>
+                            </form>
                         </div>
                     </div>
                 </div>
                 <div class="widget-content widget-content-area">
                     <form class="" action="{{ route('task.list', $projectKey) }}">
 
-                        @csrf
                         <input type="hidden" name="projectKey" value="{{ $projectKey }}"/>
+
                         <div class="row ml-3 mt-3">
                             <div class="form-group ">
                                 <select name="assignee" class="selectpicker" data-width="fit">

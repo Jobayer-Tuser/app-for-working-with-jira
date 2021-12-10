@@ -11,8 +11,14 @@
             <div class="statbox widget box box-shadow">
                 <div class="widget-header">
                     <div class="row">
-                        <div class="col-xl-12 col-md-12 col-sm-12 col-12">
+                        <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                             <h4>Find Task By</h4>
+                        </div>
+                        <div class="col-xl-6 col-md-6 col-sm-6 col-6 mt-2 align-right">
+                            <form method="POST" action="{{ route('project.sync') }}">
+                                @csrf
+                                <button type="submit" class="btn btn-sm btn-primary">Sync</button>
+                            </form>
                         </div>
                     </div>
                 </div>
