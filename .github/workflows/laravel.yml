@@ -37,12 +37,6 @@ jobs:
         mkdir -p database
         touch database/database.mysql
 
-    - name: Execute tests (Unit and Feature tests) via PHPUnit
-      env:
-        DB_CONNECTION: mysql
-        DB_DATABASE: database/database.mysql
-      run: vendor/bin/phpunit
-
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.2.0
       with:
