@@ -19,12 +19,15 @@ jobs:
       run: |
         npm install
         npm run dev
+        npm fund
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Install Dependencies
-      run: composer install --no-dev --no-interaction --prefer-dist
+      run: |
+        composer install --no-dev --no-interaction --prefer-dist
+        composer fund
 
     - name: Generate key
       run: php artisan key:generate
