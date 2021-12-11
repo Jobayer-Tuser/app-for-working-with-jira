@@ -14,7 +14,7 @@
                         <div class="col-xl-6 col-md-6 col-sm-6 col-6">
                             <h4>Find Task By</h4>
                         </div>
-                        <div class="col-xl-6 col-md-6 col-sm-6 col-6 mt-2 align-right">
+                        <div class="col-xl-6 col-md-6 col-sm-6 col-6 mt-2">
                             <form method="POST" action="{{ route('project.sync') }}">
                                 @csrf
                                 <button type="submit" class="btn btn-sm btn-primary">Sync</button>
