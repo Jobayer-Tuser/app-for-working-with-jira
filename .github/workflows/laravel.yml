@@ -16,6 +16,7 @@ jobs:
     - uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
       with:
         php-version: '7.4'
+        extensions: mbstring, ctype, fileinfo, openssl, PDO, bcmath, json, tokenizer, xml
 
     - name: Use Node.js 16
       uses: actions/setup-node@v2
@@ -23,7 +24,7 @@ jobs:
         node-version: '16'
 
     - name: 🔨 Build Project
-      run: |
+      run:
         npm install
         npm run build
 
@@ -31,7 +32,7 @@ jobs:
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
 
     - name: Install Dependencies
-      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+      run: composer install --no-dev --no-interaction --prefer-dist
 
     - name: Generate key
       run: php artisan key:generate
@@ -39,10 +40,10 @@ jobs:
     - name: Directory Permissions
       run: chmod -R 777 storage bootstrap/cache
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.2.0
-      with:
-        server: pms.ollyo.net
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_pass }}
-        server-dir: /public_html/deploy/
+    # - name: 📂 Sync files
+    #   uses: SamKirkland/FTP-Deploy-Action@4.2.0
+    #   with:
+    #     server: pms.ollyo.net
+    #     username: ${{ secrets.ftp_username }}
+    #     password: ${{ secrets.ftp_pass }}
+    #     server-dir: /public_html/deploy/
