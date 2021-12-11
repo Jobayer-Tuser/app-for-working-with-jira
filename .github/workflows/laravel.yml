@@ -18,7 +18,7 @@ jobs:
     - name: 🔨 Build Project
       run: |
         npm install
-        npm run build
+        npm run dev
 
     - name: Copy .env
       run: php -r "file_exists('.env') || copy('.env.example', '.env');"
@@ -42,7 +42,7 @@ jobs:
         DB_CONNECTION: mysql
         DB_DATABASE: database/database.mysql
       run: vendor/bin/phpunit
-      
+
     - name: 📂 Sync files
       uses: SamKirkland/FTP-Deploy-Action@4.2.0
       with:
