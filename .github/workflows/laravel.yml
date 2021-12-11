@@ -43,4 +43,4 @@ jobs:
         server: pms.ollyo.net
         username: ${{ secrets.ftp_username }}
         password: ${{ secrets.ftp_pass }}
-        server-dir: /public_html/deploy/
+        server-dir: /public_html/
