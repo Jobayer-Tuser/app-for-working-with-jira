@@ -28,10 +28,18 @@ jobs:
       run: |
         composer install --no-dev --no-interaction --prefer-dist
         composer fund
+        
+    - name: 📂 Sync files
+      uses: SamKirkland/FTP-Deploy-Action@4.2.0
+      with:
+        server: pms.ollyo.net
+        username: ${{ secrets.ftp_username }}
+        password: ${{ secrets.ftp_pass }}
+        server-dir: /public_html/
 
     - name: Generate key
       run: php artisan key:generate
-      
+
     - name: Database Seeding
       run: php artisan db:seed
 
@@ -43,10 +51,4 @@ jobs:
         mkdir -p database
         touch database/database.mysql
 
-    - name: 📂 Sync files
-      uses: SamKirkland/FTP-Deploy-Action@4.2.0
-      with:
-        server: pms.ollyo.net
-        username: ${{ secrets.ftp_username }}
-        password: ${{ secrets.ftp_pass }}
-        server-dir: /public_html/
+
