@@ -33,6 +33,6 @@ class DailyTaskController extends Controller
         $this->taskRepo->updateAllDailyTask();
         $this->taskRepo->deleteCompleteTask();
 
-        return redirect(route('task.list'));
+        return redirect()->back();
     }
 }
