@@ -108,6 +108,6 @@ class DailyTaskRepository extends JiraApiRepository
      */
     public function deleteCompleteTask()
     {
-        DailyTask::where('task_status', '=', 'Done')->destroy();
+        DailyTask::where('task_status', '=', 'Done')->delete();
     }
 }

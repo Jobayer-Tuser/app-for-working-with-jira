@@ -35,5 +35,6 @@ class ProjectController extends Controller
     public function runCronJobForProject()
     {
         $this->proRepo->updateEveryProject();
+        return redirect(route('project.list'));
     }
 }
