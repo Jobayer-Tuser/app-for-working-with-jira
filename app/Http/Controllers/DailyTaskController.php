@@ -31,7 +31,7 @@ class DailyTaskController extends Controller
     public function runCronJobForTask()
     {
         $this->taskRepo->updateAllDailyTask();
-        $this->taskRepo->deleteCompleteTask();
+        // $this->taskRepo->deleteCompleteTask();
 
         return redirect()->back();
     }
