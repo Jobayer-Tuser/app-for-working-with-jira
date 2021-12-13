@@ -4,6 +4,8 @@ namespace App\Console;
 
 use Illuminate\Console\Scheduling\Schedule;
 use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
+use App\Repositories\DailyTaskRepository;
+use App\Repositories\ProjectRepository;
 
 class Kernel extends ConsoleKernel
 {
@@ -21,6 +23,17 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $task = new DailyTaskRepository();
+        $project = new DailyTaskRepository();
+
+        $schedule->call(function ( $project, $task ) {
+
+            $project->updateEveryProject();
+            $task->updateAllDailyTask();
+            $task->deleteCompleteTask();
+
+        })->hourly();
+
     }
 
     /**
