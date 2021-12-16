@@ -74,4 +74,11 @@ class ProjectRepository extends JiraApiRepository
         return $projectState->save();
     }
 
+    public function getAllGroup()
+    {
+        $url      = $this->baseUrl . 'groups/picker';
+        $projects = $this->getJiraApiResponse($this->email, $this->password, $url);
+        return $projects;
+    }
+
 }

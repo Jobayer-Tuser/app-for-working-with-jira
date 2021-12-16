@@ -37,4 +37,9 @@ class ProjectController extends Controller
         $this->proRepo->updateEveryProject();
         return redirect(route('project.list'));
     }
+
+    public function getGroup()
+    {
+        return $this->proRepo->getAllGroup();
+    }
 }

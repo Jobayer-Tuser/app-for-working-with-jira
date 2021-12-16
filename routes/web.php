@@ -34,7 +34,9 @@ use App\Models\DailyTask;
 
     #task route
     Route::post('task', [DailyTaskController::class, 'runCronJobForTask'])->name('task.sync');
-    Route::get('task/{id}', [DailyTaskController::class, 'index'])->name('task.list');
+    Route::get('task', [DailyTaskController::class, 'index'])->name('task.list');
+
+    Route::get('group', [ProjectController::class, 'getGroup']);
 
     Route::group(['middleware' => ['auth']], function() {
     });

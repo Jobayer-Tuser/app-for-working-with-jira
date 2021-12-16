@@ -14,14 +14,13 @@ class DailyTaskController extends Controller
         $this->taskRepo = $dailyTaskRepository;
     }
 
-    public function index(Request $request, $key)
+    public function index(Request $request)
     {
-        $value = $this->taskRepo->getAllTask($key, $request->assignee, $request->tastState, $request->spintName);
+        $value = $this->taskRepo->getAllTask($request->assignee, $request->tastState, $request->spintName);
         $data = [
             'tasks'         => $value['tasks'],
             'tastState'     => $value['tastState'],
             'sprintName'    => $value['sprintName'],
-            'projectKey'    => $value['projectKey'],
             'assignedPerson'=> $value['assignedPerson'],
         ];
         return view('pages.tasks.index', $data);

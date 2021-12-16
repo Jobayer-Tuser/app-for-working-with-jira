@@ -9,9 +9,9 @@ use App\Models\Project;
 
 class DailyTaskRepository extends JiraApiRepository
 {
-    public function getAllTask( $key, $assignee = null, $tastState = null, $spintName = null )
+    public function getAllTask($assignee = null, $tastState = null, $spintName = null )
     {
-        $query = DailyTask::where('project_key', $key);
+        $query = DailyTask::query();
 
         if( isset($assignee) ) {
             $query->where('assignee', $assignee);
@@ -26,7 +26,6 @@ class DailyTaskRepository extends JiraApiRepository
         $data['tasks']          = $query->get();
         $data['tastState']      = DailyTask::getTaskState()->get();
         $data['sprintName']     = $query->select('sprint_name')->distinct()->get();
-        $data['projectKey']     = $key;
         $data['assignedPerson'] = $query->select('assignee')->distinct()->get();
 
         return $data;

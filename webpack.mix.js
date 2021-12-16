@@ -16,3 +16,7 @@ mix.js('resources/js/app.js', 'public/js')
     .sourceMaps();
 
 mix.browserSync('zira-api.test');
+
+// Users
+mix.sass('resources/sass/assets/users/account-setting.scss', 'public/assets/css/users/')
+.sass('resources/sass/assets/users/user-profile.scss', 'public/assets/css/users/')
