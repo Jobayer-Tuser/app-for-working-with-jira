@@ -26,9 +26,9 @@ class ProjectController extends Controller
 
     public function update(Request $request)
     {
-        $status = $this->proRepo->updateProjectStautus( $request->status, $request->id );
+        $status = $this->proRepo->updateProjectStautus( $request->project_status, $request->project_id );
         if ( $status > 0 ){
-            return response()->json(['success'=>'Status change successfully.']);
+            return redirect(route('project.list'));
         }
     }
 

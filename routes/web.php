@@ -28,9 +28,13 @@ use App\Models\DailyTask;
     Route::get('home', [HomeController::class, 'index'])->name('home');
 
     #project route
-    Route::post('project', [ProjectController::class, 'runCronJobForProject'])->name('project.sync');
-    Route::get('project', [ProjectController::class, 'index'])->name('project.list');
-    Route::post('projects/update',[ProjectController::class, 'update'])->name('project.update');
+    Route::group(['prefix' => 'project'], function(){
+
+        Route::post('sync', [ProjectController::class, 'runCronJobForProject'])->name('project.sync');
+        Route::get('list', [ProjectController::class, 'index'])->name('project.list');
+        Route::post('status/update',[ProjectController::class, 'update'])->name('project.update.status');
+
+    });
 
     #task route
     Route::post('task', [DailyTaskController::class, 'runCronJobForTask'])->name('task.sync');

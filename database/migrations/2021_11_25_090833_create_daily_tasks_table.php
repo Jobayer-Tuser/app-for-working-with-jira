@@ -18,10 +18,11 @@ class CreateDailyTasksTable extends Migration
             $table->string('project_id', 127);
             $table->string('project_key', 127);
             $table->string('project_name', 127);
+            $table->string('assignee_id', 127);
+            $table->string('assignee', 127);
             $table->string('sprint_name', 127);
             $table->string('task_status', 127);
             $table->text('task_summary');
-            $table->string('assignee');
             $table->string('task_start_date')->nullable();
             $table->string('task_end_date')->nullable();
             $table->timestamps();

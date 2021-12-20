@@ -42,6 +42,8 @@ class DailyTaskRepository extends JiraApiRepository
         #parse all project key from database
         $projectKeys = Project::select('project_key')->get();
 
+        $newTask = [];
+        $oldTask = [];
         foreach ($projectKeys as $eachKey) {
 
             # Parse the full url to fetch every task for single project
@@ -63,41 +65,63 @@ class DailyTaskRepository extends JiraApiRepository
                             }
                         }
                     }
-                    $oldDailyTask = DailyTask::where('project_key', '=', $issue->fields->project->key)->first();
+                    $oldDailyTask = DailyTask::where('project_key', $issue->fields->project->key)->first();
 
                     #get the old daily task value and update them
                     if ($oldDailyTask) {
+                        $oldTask [] = [
+                            'project_id'        => $issue->fields->project->id,
+                            'project_key'       => $issue->fields->project->key,
+                            'project_name'      => $issue->fields->project->name,
+                            'sprint_name'       => $sprintName ?? 'No Name',
+                            'task_status'       =>  $issue->fields->status->name,
+                            'task_summary'      => $issue->fields->summary,
+                            'assignee_id'       => $issue->fields->assignee->accountId ?? 'No ID',
+                            'assignee'          => $issue->fields->assignee->displayName ?? 'No One Assigned',
+                            'task_start_date'   => $startDate ?? null,
+                            'task_end_date'     => $endDate ?? null,
+                            'updated_at'        => now()->toDateTimeString(),
+                        ];
 
-                        $oldDailyTask->project_id      = $issue->fields->project->id;
-                        $oldDailyTask->project_key     = $issue->fields->project->key;
-                        $oldDailyTask->project_name    = $issue->fields->project->name;
-                        $oldDailyTask->sprint_name     = $sprintName ?? 'No Name';
-                        $oldDailyTask->task_status     = $issue->fields->status->name;
-                        $oldDailyTask->task_summary    = $issue->fields->summary;
-                        $oldDailyTask->assignee        = $issue->fields->assignee->displayName ?? 'No One Assigned';
-                        $oldDailyTask->task_start_date = $startDate ?? null;
-                        $oldDailyTask->task_end_date   = $endDate ?? null;
-                        $oldDailyTask->created_at      = date('Y-m-d H:i:s');
-                        $oldDailyTask->save();
+                        // $oldDailyTask->update($oldTask);
+
                     } else {
 
-                        # insert tha new daily task data daily_task table
-                        $dailyTask = new DailyTask();
-                        $dailyTask->assignee        = $issue->fields->assignee->displayName ?? 'No One Assigned';
-                        $dailyTask->project_id      = $issue->fields->project->id;
-                        $dailyTask->project_key     = $issue->fields->project->key;
-                        $dailyTask->sprint_name     = $sprintName ?? 'No Name';
-                        $dailyTask->task_status     = $issue->fields->status->name;
-                        $dailyTask->project_name    = $issue->fields->project->name;
-                        $dailyTask->task_summary    = $issue->fields->summary;
-                        $dailyTask->task_start_date = $startDate ?? null;
-                        $dailyTask->task_end_date   = $endDate ?? null;
-                        $dailyTask->created_at      = date('Y-m-d H:i:s');
-                        $dailyTask->save();
+                        $newTask [] = [
+                            'project_id'        => $issue->fields->project->id,
+                            'project_key'       => $issue->fields->project->key,
+                            'project_name'      => $issue->fields->project->name,
+                            'sprint_name'       => $sprintName ?? 'No Name',
+                            'task_status'       => $issue->fields->status->name,
+                            'task_summary'      => $issue->fields->summary,
+                            'assignee_id'       => $issue->fields->assignee->accountId ?? 'No ID',
+                            'assignee'          => $issue->fields->assignee->displayName ?? 'No One Assigned',
+                            'task_start_date'   => $startDate ?? null,
+                            'task_end_date'     => $endDate ?? null,
+                            'created_at'        => now()->toDateTimeString(),
+                        ];
+
+                        // # insert tha new daily task data daily_task table
+                        // $dailyTask = new DailyTask();
+                        // $dailyTask->project_id      = $issue->fields->project->id;
+                        // $dailyTask->project_key     = $issue->fields->project->key;
+                        // $dailyTask->project_name    = $issue->fields->project->name;
+                        // $dailyTask->sprint_name     = $sprintName ?? 'No Name';
+                        // $dailyTask->task_status     = $issue->fields->status->name;
+                        // $dailyTask->task_summary    = $issue->fields->summary;
+                        // $dailyTask->assignee_id     = $issue->fields->assignee->accountId ?? 'No ID';
+                        // $dailyTask->assignee        = $issue->fields->assignee->displayName ?? 'No One Assigned';
+                        // $dailyTask->task_start_date = $startDate ?? null;
+                        // $dailyTask->task_end_date   = $endDate ?? null;
+                        // $dailyTask->created_at      = date('Y-m-d H:i:s');
+                        // $dailyTask->save();
                     }
                 }
             }
         }
+        return $newTask;
+        DailyTask::insert($newTask);
+
     }
 
     /**
@@ -108,5 +132,13 @@ class DailyTaskRepository extends JiraApiRepository
     public function deleteCompleteTask()
     {
         DailyTask::where('task_status', '=', 'Done')->delete();
+    }
+
+    public function getProjectD()
+    {
+        # Parse the full url to fetch every task for single project
+        $url = $this->finalUrl . 'CF7';
+        return $response = $this->getJiraApiResponse($this->email, $this->password, $url);
+
     }
 }

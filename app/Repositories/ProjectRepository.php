@@ -63,8 +63,8 @@ class ProjectRepository extends JiraApiRepository
 
     public function updateProjectStautus($status, $id)
     {
-        $projectState = Project::where('project_id', $id)->get();
-        $projectState = $projectState[0];
+        $projectState = Project::where('project_id', $id)->first();
+        // $projectState = $projectState[0];
         if ( $status == 'Tracked'){
             $projectState->project_status_on_pmo = 'Untracked';
         }

@@ -68,7 +68,7 @@
                                     <td><span class="badge badge-success">{{ $each->project_key }}</span></td>
                                     <td><span class="badge badge-dark ml-2">{{ $each->project_type }}</span></td>
                                     <td>
-                                        <a  href="" id="changeStatus" data-url="{{ route('project.update') }}" data-id="{{  $each->project_id }}" data-status="{{  $each->project_status_on_pmo }}" ><span class="badge badge-danger">{{ $each->project_status_on_pmo }}</span></a>
+                                        {{-- <a  href="" id="changeStatus" data-url="{{ route('project.update') }}" data-id="{{  $each->project_id }}" data-status="{{  $each->project_status_on_pmo }}" ><span class="badge badge-danger">{{ $each->project_status_on_pmo }}</span></a> --}}
                                     </td>
                                 </tr>
                             @endforeach
