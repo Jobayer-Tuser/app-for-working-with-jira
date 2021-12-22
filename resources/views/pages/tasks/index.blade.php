@@ -1,173 +1,131 @@
 @extends('layouts.app')
-@section('title', 'Task List')
+@section('title', 'Task list')
+
 @section('breadcrumb-main', 'Task')
-@section('breadcrumb-sub', 'List')
+@section('breadcrumb-sub', 'list')
 
 @section('content')
 
-<div class="layout-px-spacing">
-    <div class="row layout-spacing layout-top-spacing" id="cancel-row">
-        <div class="col-lg-12">
-            <div class="widget-content">
-                <div class="row">
-                    <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 ">
-                        <div class="d-flex justify-content-sm-end justify-content-center">
-                            <form class="form-inline">
-                                <div class="switch align-self-center">
-                                    <select class="selectpicker myClass mb-4">
-                                        <option>Select Something</option>
-                                    </select>
-                                </div>
-
-                            </form>
-                        </div>
-                    </div>
-                </div>
-
+@push('css')
+    <style>
+        .filterVar{
+            width: 60% !important;
+        }
+        .description {
+            margin-bottom: 5px !important;
+            margin-left: 5px !important;
+        }
+        .hrClass{
+            border-top: 1px solid rgb(5, 4, 7);
+            width: 80%;
+            left: 20%;
+            margin: 0px;
+        }
+    </style>
+@endpush
+<div class="row">
+    <form action="">
+        <div class="d-flex justify-content-end">
+            <div class="mb-3 col-md-2">
+                <select class="form-control filterVar" name="">
+                    <option value="">Dev Team</option>
+                    <option value="">Choice 1</option>
+                </select>
             </div>
-        </div>
-    </div>
-
-    <div class="row layout-spacing">
-        <!-- Content -->
-        <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 layout-top-spacing">
-
-            <div class="education layout-spacing ">
-                <div class="widget-content widget-content-area">
-                    <h3 class="ml-3 mt-3 ">Shibbir ( Senior Support)</h3>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <div class="timeline-alter ml-3">
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Royal Collage of Art</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Massachusetts Institute of Technology (MIT)</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>School of Art Institute of Chicago (SAIC)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <hr class="col-md-10" style="border-top: dotted 1px; " />
-
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <div class="timeline-alter ml-3">
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Royal Collage of Art</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Massachusetts Institute of Technology (MIT)</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>School of Art Institute of Chicago (SAIC)</p>
-                            </div>
-                        </div>
-                    </div>
-                    <hr />
-                </div>
-
+            <div class="mb-3 col-md-2">
+                <select class="form-control filterVar" name="">
+                    <option value="">Project</option>
+                    <option value="">Choice 1</option>
+                </select>
+            </div>
+            <div class="mb-3 col-md-2">
+                <select class="form-control filterVar" name="">
+                    <option value="">Project Status</option>
+                    <option value="">Choice 1</option>
+                </select>
             </div>
 
-            <div class="education layout-spacing ">
-                <div class="widget-content widget-content-area">
-                    <h3 class="ml-3 mt-3">Education</h3>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-                    <div class="timeline-alter ml-3">
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Royal Collage of Art</p>
-                                <p>Designer Illustrator</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Massachusetts Institute of Technology (MIT)</p>
-                                <p>Designer Illustrator</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>School of Art Institute of Chicago (SAIC)</p>
-                                <p>Designer Illustrator</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+            <div class="ml-2">
+                <button class="btn btn-sm btn-primary">Show</button>
             </div>
-            <div class="education layout-spacing ">
-                <div class="widget-content widget-content-area">
-                    <h3 class="ml-3 mt-3">Education</h3>
-                    <span class="badge badge-primary ml-3"> Primary </span>
-
-                    <div class="timeline-alter ml-3">
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Royal Collage of Art</p>
-                                <p>Designer Illustrator</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>Massachusetts Institute of Technology (MIT)</p>
-                                <p>Designer Illustrator</p>
-                            </div>
-                        </div>
-                        <div class="item-timeline">
-                            <div class="t-dot">
-                            </div>
-                            <div class="t-text">
-                                <p>School of Art Institute of Chicago (SAIC)</p>
-                                <p>Designer Illustrator</p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-
 
         </div>
 
+    </form>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+
+            <div class="card-body">
+                <h1 class="card-title">Special title treatment</h1>
+                <span class="badge bg-success">Builder</span>
+                <span class="badge bg-success">Builder</span>
+                <span class="badge bg-success">Builder</span>
+            </div>
+
+            <div class="px-3">
+                <ul class="list-unstyled">
+                    <li class="">
+                        <div class="d-flex">
+                            <div class="font-size-20 text-success">
+                                <i class="bx bx-down-arrow-circle d-block"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="">
+                        <div class="d-flex">
+                            <div class="font-size-20 text-success">
+                                <i class="bx bx-down-arrow-circle d-block"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="px-5">
+                <hr class="hrClass" />
+            </div>
+
+            <div class="card-body">
+                <span class="badge bg-success">Builder</span>
+                <span class="badge bg-success">Builder</span>
+                <span class="badge bg-success">Builder</span>
+            </div>
+
+            <div class="px-3">
+                <ul class="list-unstyled">
+                    <li class="">
+                        <div class="d-flex">
+                            <div class="font-size-20 text-success">
+                                <i class="bx bx-down-arrow-circle d-block"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
+                            </div>
+                        </div>
+                    </li>
+                    <li class="">
+                        <div class="d-flex">
+                            <div class="font-size-20 text-success">
+                                <i class="bx bx-down-arrow-circle d-block"></i>
+                            </div>
+                            <div class="flex-grow-1 overflow-hidden">
+                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </div>
+
+        </div>
     </div>
 </div>
 

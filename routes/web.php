@@ -41,6 +41,8 @@ use App\Models\DailyTask;
     Route::get('task', [DailyTaskController::class, 'index'])->name('task.list');
 
     Route::get('group', [ProjectController::class, 'getGroup']);
+    Route::get('user', [ProjectController::class, 'getUser']);
+
 
     Route::group(['middleware' => ['auth']], function() {
     });

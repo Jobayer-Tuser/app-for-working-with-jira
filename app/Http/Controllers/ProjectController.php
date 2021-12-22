@@ -42,4 +42,9 @@ class ProjectController extends Controller
     {
         return $this->proRepo->getAllGroup();
     }
+
+    public function getUser()
+    {
+        return $this->proRepo->getUser();
+    }
 }

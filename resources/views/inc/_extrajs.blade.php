@@ -1,13 +1,12 @@
-<script src="{{ asset('assets/plugins/table/datatable/datatables.js') }}"></script>
-<script src="{{ asset('assets/plugins/table/datatable/button-ext/dataTables.buttons.min.js') }}"></script>
-<script src="{{ asset('assets/js/apps/invoice-list.js') }}"></script>
-<script src="{{ asset('assets/js/scrollspyNav.js') }}"></script>
-<script src="{{ asset('assets/plugins/tagInput/tags-input.js') }}"></script>
-<script src="{{ asset('assets/js/scrollspyNav.js') }}"></script>
-<script src="{{ asset('assets/plugins/bootstrap-select/bootstrap-select.min.js') }}"></script>
-<script>
-    var instance = new TagsInput({
-        selector: 'skill-input'
-    });
-    instance.addData(['PHP', 'Wordpress', 'Javascript', 'jQuery'])
-</script>
+<!-- Required datatable js -->
+<script src="{{ asset('assets/libs/datatables.net/js/jquery.dataTables.min.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables.net-buttons/js/dataTables.buttons.min.js') }}"></script>
+<script src="{{ asset('assets/libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js')}}"></script>
+<script src="{{ asset('assets/js/pages/datatables.init.js') }}"></script>
+
+<script src="{{ asset('assets/libs/choices.js/public/assets/scripts/choices.min.js') }}"></script>
+<script src="{{ asset('assets/js/pages/form-advanced.init.js') }}"></script>
+
+
+

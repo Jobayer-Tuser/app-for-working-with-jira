@@ -1,47 +1,62 @@
-<div class="header-container fixed-top">
-    <header class="header navbar navbar-expand-sm">
-
-        <ul class="navbar-item theme-brand flex-row  text-center">
-            <li class="nav-item theme-logo">
-                <a href="index.html">
-                    <img src="assets/img/90x90.jpg" class="navbar-logo" alt="logo">
+<header id="page-topbar">
+    <div class="navbar-header">
+        <div class="d-flex">
+            <!-- LOGO -->
+            <div class="navbar-brand-box">
+                <a href="index.html" class="logo logo-dark">
+                    <span class="logo-sm">
+                        <img src="{{ asset('assets/images/logo-sm.svg') }}" alt="" height="24">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="{{ asset('assets/images/logo-sm.svg') }}" alt="" height="24"> <span class="logo-txt">Minia</span>
+                    </span>
                 </a>
-            </li>
-            <li class="nav-item theme-text">
-                <a href="index.html" class="nav-link"> CORK </a>
-            </li>
-        </ul>
 
-        <ul class="navbar-item flex-row ml-md-auto">
-
-            <li class="nav-item dropdown user-profile-dropdown">
-                <a href="javascript:void(0);" class="nav-link dropdown-toggle user" id="userProfileDropdown" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                    <img src="assets/img/90x90.jpg" alt="avatar">
+                <a href="index.html" class="logo logo-light">
+                    <span class="logo-sm">
+                        <img src="{{ asset('assets/images/logo-sm.svg') }}" alt="" height="24">
+                    </span>
+                    <span class="logo-lg">
+                        <img src="{{ asset('assets/images/logo-sm.svg') }}" alt="" height="24"> <span class="logo-txt">Minia</span>
+                    </span>
                 </a>
-                <div class="dropdown-menu position-absolute" aria-labelledby="userProfileDropdown">
-                    <div class="">
-                        {{-- <div class="dropdown-item">
-                            <a class="" href=""><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-user"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg> {{ Auth::user()->name }}</a>
-                        </div>
-                        <div class="dropdown-item">
-                            <a class="" href="apps_mailbox.html"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-inbox"><polyline points="22 12 16 12 14 15 10 15 8 12 2 12"></polyline><path d="M5.45 5.11L2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z"></path></svg> Inbox</a>
-                        </div>
-                        <div class="dropdown-item">
-                            <a class="" href="auth_lockscreen.html"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-lock"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect><path d="M7 11V7a5 5 0 0 1 10 0v4"></path></svg> Lock Screen</a>
-                        </div> --}}
-                        <div class="dropdown-item">
-                            <a class="" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-log-out"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
-                            Sign Out</a>
-                        </div>
+            </div>
 
-                        <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
-                            @csrf
-                        </form>
-                    </div>
+            <button type="button" class="btn btn-sm px-3 font-size-16 header-item" id="vertical-menu-btn">
+                <i class="fa fa-fw fa-bars"></i>
+            </button>
+
+            <!-- App Search-->
+            <form class="app-search d-none d-lg-block">
+                <div class="position-relative">
+                    <input type="text" class="form-control" placeholder="Search...">
+                    <button class="btn btn-primary" type="button"><i class="bx bx-search-alt align-middle"></i></button>
                 </div>
-            </li>
-            </li>
-        </ul>
-    </header>
-</div>
+            </form>
+        </div>
+
+        <div class="d-flex">
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item bg-soft-light border-start border-end" id="page-header-user-dropdown"
+                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <img class="rounded-circle header-profile-user" src="{{ asset('assets/images/users/avatar-1.jpg') }}"
+                        alt="Header Avatar">
+                    <span class="d-none d-xl-inline-block ms-1 fw-medium">Shawn L.</span>
+                    <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <!-- item-->
+                    <a class="dropdown-item" href="apps-contacts-profile.html"><i class="mdi mdi-face-profile font-size-16 align-middle me-1"></i> Profile</a>
+                    <a class="dropdown-item" href="auth-lock-screen.html"><i class="mdi mdi-lock font-size-16 align-middle me-1"></i> Lock screen</a>
+                    <div class="dropdown-divider"></div>
+                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();" ><i class="mdi mdi-logout font-size-16 align-middle me-1"></i> {{ __('Sign Out') }} </a>
+
+                    <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                        @csrf
+                    </form>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</header>

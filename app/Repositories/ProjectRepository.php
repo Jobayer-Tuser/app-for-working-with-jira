@@ -3,6 +3,8 @@
 namespace App\Repositories;
 
 use App\Models\Project;
+use App\Models\Group;
+use App\Models\Assignee;
 
 class ProjectRepository extends JiraApiRepository
 {
@@ -44,7 +46,7 @@ class ProjectRepository extends JiraApiRepository
                 $getProjectKey->project_key  = $eachProject->key;
                 $getProjectKey->project_name = $eachProject->name;
                 $getProjectKey->project_type = isset($eachProject->projectCategory) ? $eachProject->projectCategory->name : null;
-                $getProjectKey->updated_at   = date('Y-m-d H:i:s');
+                $getProjectKey->updated_at   = now()->toDateTimeString();
                 $getProjectKey->save();
 
             } else {
@@ -54,7 +56,7 @@ class ProjectRepository extends JiraApiRepository
                 $project->project_key  = $eachProject->key;
                 $project->project_name = $eachProject->name;
                 $project->project_type = isset($eachProject->projectCategory) ? $eachProject->projectCategory->name : null;
-                $project->created_at   = date('Y-m-d H:i:s');
+                $project->created_at   = now()->toDateTimeString();
                 $project->save();
             }
 
@@ -77,8 +79,90 @@ class ProjectRepository extends JiraApiRepository
     public function getAllGroup()
     {
         $url      = $this->baseUrl . 'groups/picker';
-        $projects = $this->getJiraApiResponse($this->email, $this->password, $url);
-        return $projects;
+        $resp = $this->getJiraApiResponse($this->email, $this->password, $url);
+
+        $newgroup = [];
+        // Group::whereNotNull('id')->delete();
+        foreach ($resp->groups as $group) {
+
+            $oldGroupData = Group::where('group_id', $group->groupId)->first();
+
+            if ( isset($ollGroupData) && !empty($oldGroupData) ) {
+                $ollGroupData->name = $group->name;
+                $ollGroupData->group_id = $group->groupId;
+                $ollGroupData->updated_at = now()->toDateTimeString();
+                $ollGroupData->save();
+
+            } else {
+
+                $newgroup [] = [
+                    'name'      => $group->name,
+                    'group_id'  => $group->groupId,
+                    'created_at' => now()->toDateTimeString(),
+                ];
+            }
+        }
+        Group::insert($newgroup);
+        return Group::all();
+    }
+
+    public function getUser()
+    {
+        $url  = $this->baseUrl . 'users';
+        $url  = $this->baseUrl . 'user/groups?accountId=5c728f65c82a9a36251e55cd';
+        $url  = $this->baseUrl . 'users/search';
+        // $url  = $this->baseUrl . 'user?accountId=5c728f65c82a9a36251e55cd';
+        //https://ollyo.atlassian.net/rest/api/2/user/groups?accountId=5c728f65c82a9a36251e55cd'
+
+        // return $userResp = $this->getJiraApiResponse($this->email, $this->password, $url);
+
+        $userResp = $this->getJiraApiResponse($this->email, $this->password, $url);
+        $userInfo = [];
+        foreach ( $userResp as $user ) {
+
+            $url  = $this->baseUrl . 'user/groups?accountId='. $user->accountId;
+            $groupResponse = $this->getJiraApiResponse($this->email, $this->password, $url);
+
+            $oldAssignee = Assignee::where('account_id',  $user->accountId)->first();
+
+            $userGroup = [];
+            foreach ( $groupResponse as $group ) {
+
+                $userGroup [] = $group->name;
+
+                if ( isset($oldAssignee) && !empty($oldAssignee) ){
+
+                    $oldAssignee->group_name = $group->name;
+                    $oldAssignee->account_id = $user->accountId;
+                    $oldAssignee->assignee_name = $user->displayName;
+                    $oldAssignee->email_id = isset($user->emailAddress) ? $user->emailAddress : 'No Email';
+                    $oldAssignee->active_status = $user->active;
+                    $oldAssignee->account_type = $user->accountType;
+                    $oldAssignee->updated_at = now()->toDateTimeString();
+                    $oldAssignee->save();
+
+                } else {
+
+                    $userInfo [] = [
+                        'group_name' => $group->name,
+                        'account_id' => $user->accountId,
+                        'assignee_name' => $user->displayName,
+                        'email_id' => isset($user->emailAddress) ? $user->emailAddress : 'No Email',
+                        'active_status' => $user->active,
+                        'account_type' => $user->accountType,
+                        'created_at' => now()->toDateTimeString(),
+                    ];
+                }
+
+            }
+            // var_dump($userGroup);
+            // return $userGroup;
+
+        }
+        // var_dump($userInfo);
+        Assignee::insert($userInfo);
+
+        return Assignee::all();
     }
 
 }

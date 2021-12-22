@@ -2,7 +2,7 @@ name: Laravel
 
 on:
   push:
-    branches: [ master ]
+    branches: [ minia_temp ]
 
 jobs:
   laravel-tests:
