@@ -22,18 +22,19 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
-        $task = new DailyTaskRepository();
-        $project = new DailyTaskRepository();
+        $schedule->command('update:dailyproject')
+                ->everyMinute()
+                ->appendOutputTo('scheduler.log');
+    }
 
-        $schedule->call(function ( $project, $task ) {
-
-            $project->updateEveryProject();
-            $task->updateAllDailyTask();
-            $task->deleteCompleteTask();
-
-        })->hourly();
-
+    /**
+     * Get the timezone that should be used by default for scheduled events.
+     *
+     * @return \DateTimeZone|string|null
+     */
+    protected function scheduleTimeZone()
+    {
+        return 'Asia/Dhaka';
     }
 
     /**

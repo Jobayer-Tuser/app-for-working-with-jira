@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Http;
 use App\Interfaces\JiraApiRepositoryInterface;
 use App\Models\DailyTask;
 use App\Models\Project;
+use Exception;
 
 class JiraApiRepository implements JiraApiRepositoryInterface
 {
@@ -37,7 +38,13 @@ class JiraApiRepository implements JiraApiRepositoryInterface
      */
     public function getJiraApiResponse($email, $password, $url)
     {
-        $response = Http::withBasicAuth($email, $password)->get($url)->body();
-        return json_decode($response);
+        try {
+
+            $response = Http::withBasicAuth($email, $password)->get($url)->body();
+            return json_decode($response);
+
+        } catch( Exception $error ) {
+            echo $error->getMessage();
+        }
     }
 }

@@ -33,31 +33,31 @@ class ProjectRepository extends JiraApiRepository
      */
     public function updateEveryProject()
     {
-        $url      = $this->baseUrl . 'project';
+        $url      = $this->baseUrl . 'project/search';
         $projects = $this->getJiraApiResponse($this->email, $this->password, $url);
 
-        foreach( $projects AS $eachProject) {
+        foreach( $projects->values AS $eachProject) {
+            // return $eachProject;
+            $oldProject = Project::where('project_key', '=', $eachProject->key)->first();
 
-            $getProjectKey = Project::where('project_key', '=', $eachProject->key)->first();
+            if ( isset($oldProject) && !empty($oldProject)) {
 
-            if ($getProjectKey) {
-
-                $getProjectKey->project_id   = $eachProject->id;
-                $getProjectKey->project_key  = $eachProject->key;
-                $getProjectKey->project_name = $eachProject->name;
-                $getProjectKey->project_type = isset($eachProject->projectCategory) ? $eachProject->projectCategory->name : null;
-                $getProjectKey->updated_at   = now()->toDateTimeString();
-                $getProjectKey->save();
+                $oldProject->project_id   = $eachProject->id;
+                $oldProject->project_key  = $eachProject->key;
+                $oldProject->project_name = $eachProject->name;
+                $oldProject->project_type = isset($eachProject->projectCategory) ? $eachProject->projectCategory->name : null;
+                $oldProject->updated_at   = now()->toDateTimeString();
+                $oldProject->save();
 
             } else {
 
-                $project = new Project();
-                $project->project_id   = $eachProject->id;
-                $project->project_key  = $eachProject->key;
-                $project->project_name = $eachProject->name;
-                $project->project_type = isset($eachProject->projectCategory) ? $eachProject->projectCategory->name : null;
-                $project->created_at   = now()->toDateTimeString();
-                $project->save();
+                $newproject = new Project();
+                $newproject->project_id   = $eachProject->id;
+                $newproject->project_key  = $eachProject->key;
+                $newproject->project_name = $eachProject->name;
+                $newproject->project_type = isset($eachProject->projectCategory) ? $eachProject->projectCategory->name : null;
+                $newproject->created_at   = now()->toDateTimeString();
+                $newproject->save();
             }
 
         }
@@ -76,9 +76,9 @@ class ProjectRepository extends JiraApiRepository
         return $projectState->save();
     }
 
-    public function getAllGroup()
+    public function updateEveryGroup()
     {
-        $url      = $this->baseUrl . 'groups/picker';
+        $url  = $this->baseUrl . 'groups/picker';
         $resp = $this->getJiraApiResponse($this->email, $this->password, $url);
 
         $newgroup = [];
@@ -103,10 +103,11 @@ class ProjectRepository extends JiraApiRepository
             }
         }
         Group::insert($newgroup);
-        return Group::all();
     }
 
-    public function getUser()
+
+
+    public function updateEveryUser()
     {
         $url  = $this->baseUrl . 'users';
         $url  = $this->baseUrl . 'user/groups?accountId=5c728f65c82a9a36251e55cd';
@@ -161,8 +162,6 @@ class ProjectRepository extends JiraApiRepository
         }
         // var_dump($userInfo);
         Assignee::insert($userInfo);
-
-        return Assignee::all();
     }
 
 }

@@ -31,13 +31,19 @@ class DailyTaskRepository extends JiraApiRepository
         return $data;
     }
 
+    public function updateAllDailyTask() {
+        $diff = now()->toTimeString();
+        $sql = " SELECT `project_key` from `projects` where `last_sync` <= DATE_SUB(NOW(), INTERVAL 5 MINUTE) ";
+        return $projectKeys = DB::select($sql);
+
+    }
     /**
      * Parse all project key from data and preapare full api to fetch all value from Jira Board
      * Update the old task and insert the new task to daily_task table
      *
      * @return void
      */
-    public function updateAllDailyTask()
+    public function updateAllDailyTaskOld()
     {
         #parse all project key from database
         $projectKeys = Project::select('project_key')->get();
@@ -101,16 +107,21 @@ class DailyTaskRepository extends JiraApiRepository
                     }
                 }
             }
+            // var_dump($oldTask);
             // var_dump($newTask);
+            foreach( $oldTask AS $each ){
+                var_dump($each);
+            }
         }
-        $chunk = array_chunk( $newTask, sizeof($newTask) );
-        // var_dump($chunk); die;
-        foreach ( $chunk as $eachChunk ){
-            DailyTask::insert($eachChunk);
-            // var_dump($each);
-        }
-        // die; some change
-        // var_dump($oldTask);
+
+
+        // if ( isset($newTask) && !empty($newTask) ){
+        //     $chunk = array_chunk( $newTask, sizeof($newTask) );
+        //     // var_dump($chunk); die;
+        //     foreach ( $chunk as $eachChunk ){
+        //         DailyTask::insert($eachChunk);
+        //     }
+        // }
 
     }
 
