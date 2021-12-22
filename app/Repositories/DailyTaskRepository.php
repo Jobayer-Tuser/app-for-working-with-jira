@@ -109,6 +109,9 @@ class DailyTaskRepository extends JiraApiRepository
             DailyTask::insert($eachChunk);
             // var_dump($each);
         }
+        // die;
+        // var_dump($oldTask);
+
     }
 
     /**
