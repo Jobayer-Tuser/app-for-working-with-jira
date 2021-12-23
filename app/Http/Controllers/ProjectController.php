@@ -17,8 +17,6 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
-        return $this->proRepo->updateEveryGroup();
-
         $value = $this->proRepo->fetchAllProjectsFromDB( $request->project_type );
         $data  = [
             'projects'    => $value['projects'],
@@ -33,12 +31,6 @@ class ProjectController extends Controller
         if ( $status > 0 ){
             return redirect(route('project.list'));
         }
-    }
-
-    public function runCronJobForProject()
-    {
-        $this->proRepo->updateEveryProject();
-        return redirect(route('project.list'));
     }
 
     public function getGroup()

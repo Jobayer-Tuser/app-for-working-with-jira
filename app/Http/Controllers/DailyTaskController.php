@@ -16,7 +16,6 @@ class DailyTaskController extends Controller
 
     public function index()
     {
-        // return phpinfo();
         // return $this->taskRepo->updateAllDailyTask();
         $value = $this->taskRepo->getAllTask();
         $data = [
