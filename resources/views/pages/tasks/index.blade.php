@@ -24,29 +24,41 @@
     </style>
 @endpush
 <div class="row">
-    <form action="">
+    <form action="POST" id="taskFilterForm" action="{{ route('task.load') }}">
         <div class="d-flex justify-content-end">
             <div class="mb-3 col-md-2">
-                <select class="form-control filterVar" name="">
-                    <option value="">Dev Team</option>
-                    <option value="">Choice 1</option>
+                <select class="form-control filterVar" name="group_name">
+                    <option value="">Chose Team</option>
+                    @if( ! empty( $groups ) )
+                        @foreach ( $groups as $group )
+                            <option value="{{ $group->name }}">{{ $group->name }}</option>
+                        @endforeach
+                    @endif
                 </select>
             </div>
             <div class="mb-3 col-md-2">
-                <select class="form-control filterVar" name="">
+                <select class="form-control filterVar" name="project_name">
                     <option value="">Project</option>
-                    <option value="">Choice 1</option>
+                    @if( ! empty( $projects ) )
+                        @foreach ( $projects as $project )
+                            <option value="{{ $project->project_name }}">{{ $project->project_name }}</option>
+                        @endforeach
+                    @endif
                 </select>
             </div>
             <div class="mb-3 col-md-2">
-                <select class="form-control filterVar" name="">
+                <select class="form-control filterVar" name="project_status">
                     <option value="">Project Status</option>
-                    <option value="">Choice 1</option>
+                    @if( ! empty( $taskStates ) )
+                        @foreach ( $taskStates as $taskState )
+                            <option value="{{ $taskState->state_name }}">{{ $taskState->state_name }}</option>
+                        @endforeach
+                    @endif
                 </select>
             </div>
 
             <div class="ml-2">
-                <button class="btn btn-sm btn-primary">Show</button>
+                <button type="submit" class="btn btn-sm btn-primary">Show</button>
             </div>
 
         </div>
@@ -128,5 +140,47 @@
         </div>
     </div>
 </div>
+
+
+@push('script')
+
+    <script type="text/javascript">
+
+        $( document ).ready(function() {
+
+            loadTask();
+
+            function loadTask( group_name = null, project_name = null, project_status = null ) {
+                $.ajax({
+                    url     : "{{ route('task.load') }}",
+                    method  : "POST",
+                    data    : {
+                        _token          : "{{ csrf_token() }}",
+                        group_name      : group_name,
+                        project_name    : project_name,
+                        project_status  : project_status,
+                    },
+                    success: function( data ){
+                            console.log(data);
+                        let post = '';
+                        $.each( data , function( index, value ){
+                        });
+                        $('#projectList').html(post);
+                    }
+                })
+            }
+
+            $( document ).on('submit', '#taskFilterForm', function( event ) {
+                event.preventDefault();
+
+                let groupName       = $('[name="group_name"]').val();
+                let projectName     = $('[name="project_name"]').val();
+                let projectStatus   = $('[name="project_status"]').val();
+
+                loadTask( groupName, projectName, projectStatus );
+            });
+        });
+    </script>
+@endpush
 
 @endsection

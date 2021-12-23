@@ -38,8 +38,9 @@ use App\Models\DailyTask;
     });
 
     #task route
-    Route::post('task', [DailyTaskController::class, 'runCronJobForTask'])->name('task.sync');
     Route::get('task', [DailyTaskController::class, 'index'])->name('task.list');
+    Route::post('task', [DailyTaskController::class, 'runCronJobForTask'])->name('task.sync');
+    Route::post('filter/task', [DailyTaskController::class, 'filterTask'])->name('task.load');
 
     Route::get('group', [ProjectController::class, 'getGroup']);
     Route::get('user', [ProjectController::class, 'getUser']);

@@ -14,26 +14,23 @@ class DailyTaskController extends Controller
         $this->taskRepo = $dailyTaskRepository;
     }
 
-    public function index(Request $request)
+    public function index()
     {
         // return phpinfo();
-        return $this->taskRepo->updateAllDailyTask();
-        $value = $this->taskRepo->getAllTask($request->assignee, $request->tastState, $request->spintName);
+        // return $this->taskRepo->updateAllDailyTask();
+        $value = $this->taskRepo->getAllTask();
         $data = [
-            'tasks'         => $value['tasks'],
-            'tastState'     => $value['tastState'],
-            'sprintName'    => $value['sprintName'],
-            'assignedPerson'=> $value['assignedPerson'],
+            'groups'      => $value['groups'],
+            'projects'    => $value['projects'],
+            'taskStates'  => $value['taskStates'],
         ];
         return view('pages.tasks.index', $data);
     }
 
-
-    public function runCronJobForTask()
+    public function filterTask(Request $request)
     {
-        $this->taskRepo->updateAllDailyTask();
-        // $this->taskRepo->deleteCompleteTask();
-
-        return redirect()->back();
+        return $request;
+        $tasks = $this->taskRepo->getDailyTaskReportViaAjaxCall( $request->group_name, $request->project_name, $request->project_status );
+        return response()->json($tasks);
     }
 }

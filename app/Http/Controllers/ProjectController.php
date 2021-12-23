@@ -17,6 +17,8 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
+        return $this->proRepo->updateEveryGroup();
+
         $value = $this->proRepo->fetchAllProjectsFromDB( $request->project_type );
         $data  = [
             'projects'    => $value['projects'],

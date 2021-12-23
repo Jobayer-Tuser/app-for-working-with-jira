@@ -18,7 +18,7 @@ class Project extends Model
 
     /**
      * Scope that get all project data from DB
-     * @param query
+     * @param eloquent
      * @return array
      */
     public function scopeSelectAll( $query )

@@ -37,7 +37,6 @@ class ProjectRepository extends JiraApiRepository
         $projects = $this->getJiraApiResponse($this->email, $this->password, $url);
 
         foreach( $projects->values AS $eachProject) {
-            // return $eachProject;
             $oldProject = Project::where('project_key', '=', $eachProject->key)->first();
 
             if ( isset($oldProject) && !empty($oldProject)) {
@@ -66,7 +65,6 @@ class ProjectRepository extends JiraApiRepository
     public function updateProjectStautus($status, $id)
     {
         $projectState = Project::where('project_id', $id)->first();
-        // $projectState = $projectState[0];
         if ( $status == 'Tracked'){
             $projectState->project_status_on_pmo = 'Untracked';
         }
@@ -82,22 +80,20 @@ class ProjectRepository extends JiraApiRepository
         $resp = $this->getJiraApiResponse($this->email, $this->password, $url);
 
         $newgroup = [];
-        // Group::whereNotNull('id')->delete();
         foreach ($resp->groups as $group) {
 
             $oldGroupData = Group::where('group_id', $group->groupId)->first();
 
-            if ( isset($ollGroupData) && !empty($oldGroupData) ) {
-                $ollGroupData->name = $group->name;
-                $ollGroupData->group_id = $group->groupId;
-                $ollGroupData->updated_at = now()->toDateTimeString();
-                $ollGroupData->save();
+            if ( isset($oldGroupData) && ! empty($oldGroupData ) ) {
+                $oldGroupData->name         = $group->name;
+                $oldGroupData->group_id     = $group->groupId;
+                $oldGroupData->updated_at   = now()->toDateTimeString();
+                $oldGroupData->save();
 
             } else {
-
                 $newgroup [] = [
-                    'name'      => $group->name,
-                    'group_id'  => $group->groupId,
+                    'name'       => $group->name,
+                    'group_id'   => $group->groupId,
                     'created_at' => now()->toDateTimeString(),
                 ];
             }
@@ -112,10 +108,6 @@ class ProjectRepository extends JiraApiRepository
         $url  = $this->baseUrl . 'users';
         $url  = $this->baseUrl . 'user/groups?accountId=5c728f65c82a9a36251e55cd';
         $url  = $this->baseUrl . 'users/search';
-        // $url  = $this->baseUrl . 'user?accountId=5c728f65c82a9a36251e55cd';
-        //https://ollyo.atlassian.net/rest/api/2/user/groups?accountId=5c728f65c82a9a36251e55cd'
-
-        // return $userResp = $this->getJiraApiResponse($this->email, $this->password, $url);
 
         $userResp = $this->getJiraApiResponse($this->email, $this->password, $url);
         $userInfo = [];
