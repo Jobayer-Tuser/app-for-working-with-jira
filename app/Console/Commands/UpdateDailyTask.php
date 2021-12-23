@@ -3,6 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
+use App\Repositories\DailyTaskRepository;
+use Exception;
 
 class UpdateDailyTask extends Command
 {
@@ -37,6 +39,11 @@ class UpdateDailyTask extends Command
      */
     public function handle()
     {
-        return Command::SUCCESS;
+        $task = new DailyTaskRepository();
+        try {
+            return $task->updateAllDailyTask();
+        } catch ( Exception $error ){
+            echo $error->getMessage();
+        }
     }
 }

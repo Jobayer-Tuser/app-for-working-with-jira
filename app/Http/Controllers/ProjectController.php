@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\ProjectRepository;
+use App\Models\Project;
 
 class ProjectController extends Controller
 {
@@ -40,11 +41,17 @@ class ProjectController extends Controller
 
     public function getGroup()
     {
-        return $this->proRepo->getAllGroup();
+        return $this->proRepo->updateEveryGroup();
     }
 
     public function getUser()
     {
-        return $this->proRepo->getUser();
+        return $this->proRepo->updateEveryUser();
+    }
+
+    public function loadProject( Request $request )
+    {
+        $project = $this->proRepo->loadProjectVaiAajaxCall($request->projectType);
+        return response()->json($project);
     }
 }

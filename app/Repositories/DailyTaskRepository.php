@@ -32,9 +32,71 @@ class DailyTaskRepository extends JiraApiRepository
     }
 
     public function updateAllDailyTask() {
-        $diff = now()->toTimeString();
+
         $sql = " SELECT `project_key` from `projects` where `last_sync` <= DATE_SUB(NOW(), INTERVAL 5 MINUTE) ";
-        return $projectKeys = DB::select($sql);
+        $projectKeys = DB::select($sql);
+
+        foreach ($projectKeys as $eachKey) {
+
+            # Parse the full url to fetch every task for single project
+            $url = $this->finalUrl . $eachKey->project_key;
+            $response = $this->getJiraApiResponse($this->email, $this->password, $url);
+
+            if (isset($response->issues)) {
+                foreach ($response->issues as $issue) {
+
+                    #get the active sprint value
+                    if (isset($issue->fields->customfield_10020) && !empty($issue->fields->customfield_10020)) {
+                        foreach ($issue->fields->customfield_10020 as $key => $fields) {
+                            if ($fields->state == 'active') {
+
+                                $sprintName = $fields->name;
+                                $state      = $fields->state;
+                                $startDate  = $fields->startDate;
+                                $endDate    = $fields->endDate;
+                            }
+                        }
+                    }
+                    $oldDailyTask = DailyTask::where('project_key', $issue->fields->project->key)->first();
+
+                    #get the old daily task value and update them
+                    if (isset($oldDailyTask) && !empty($oldDailyTask)) {
+
+                        $oldDailyTask->project_key      = $issue->fields->project->key;
+                        $oldDailyTask->project_name     = $issue->fields->project->name;
+                        $oldDailyTask->sprint_name      = $sprintName ?? 'No Name';
+                        $oldDailyTask->task_status      = $issue->fields->status->name;
+                        $oldDailyTask->task_summary     = $issue->fields->summary;
+                        $oldDailyTask->assignee_id      = $issue->fields->assignee->accountId ?? 'No ID';
+                        $oldDailyTask->assignee         = $issue->fields->assignee->displayName ?? 'No One Assigned';
+                        $oldDailyTask->task_start_date  = $startDate ?? null;
+                        $oldDailyTask->task_end_date    = $endDate ?? null;
+                        $oldDailyTask->updated_at       = date('Y-m-d H:i:s');
+                        $oldDailyTask->save();
+
+                        Project::where('project_key', $eachKey->project_key )->update(['last_sync' => now()]);
+
+                    } else {
+
+                        $newTask [] = [
+                            'project_id'        => $issue->fields->project->id,
+                            'project_key'       => $issue->fields->project->key,
+                            'project_name'      => $issue->fields->project->name,
+                            'sprint_name'       => $sprintName ?? 'No Name',
+                            'task_status'       => $issue->fields->status->name,
+                            'task_summary'      => $issue->fields->summary,
+                            'assignee_id'       => $issue->fields->assignee->accountId ?? 'No ID',
+                            'assignee'          => $issue->fields->assignee->displayName ?? 'No One Assigned',
+                            'task_start_date'   => $startDate ?? null,
+                            'task_end_date'     => $endDate ?? null,
+                            'created_at'        => now()->toDateTimeString(),
+                        ];
+                        Project::insert(['last_sync' => now()]);
+                    }
+                }
+            }
+        }
+        DailyTask::insert($newTask);
 
     }
     /**

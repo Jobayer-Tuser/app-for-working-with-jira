@@ -25,6 +25,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('update:dailyproject')
                 ->everyMinute()
                 ->appendOutputTo('scheduler.log');
+
+        $schedule->command('update:dailytask')->everyFiveMinutes();
     }
 
     /**

@@ -126,10 +126,7 @@ class ProjectRepository extends JiraApiRepository
 
             $oldAssignee = Assignee::where('account_id',  $user->accountId)->first();
 
-            $userGroup = [];
             foreach ( $groupResponse as $group ) {
-
-                $userGroup [] = $group->name;
 
                 if ( isset($oldAssignee) && !empty($oldAssignee) ){
 
@@ -156,12 +153,17 @@ class ProjectRepository extends JiraApiRepository
                 }
 
             }
-            // var_dump($userGroup);
-            // return $userGroup;
-
         }
-        // var_dump($userInfo);
         Assignee::insert($userInfo);
+    }
+
+    public function loadProjectVaiAajaxCall( $project_type )
+    {
+        $query = Project::query();
+        if ( !empty( $project_type ) ) {
+            $query->where('project_type', $project_type);
+        }
+        return $query->get();
     }
 
 }

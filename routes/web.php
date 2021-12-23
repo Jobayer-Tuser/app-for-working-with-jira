@@ -32,7 +32,8 @@ use App\Models\DailyTask;
 
         Route::post('sync', [ProjectController::class, 'runCronJobForProject'])->name('project.sync');
         Route::get('list', [ProjectController::class, 'index'])->name('project.list');
-        Route::post('status/update',[ProjectController::class, 'update'])->name('project.update.status');
+        Route::post('status/update', [ProjectController::class, 'update'])->name('project.update.status');
+        Route::post('loadajax', [ProjectController::class, 'loadProject'])->name('project.load');
 
     });
 

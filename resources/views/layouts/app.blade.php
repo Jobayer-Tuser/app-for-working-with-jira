@@ -15,6 +15,7 @@
     <title> @yield('title') </title>
 
     <!-- BEGIN GLOBAL MANDATORY STYLES -->
+    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
     <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/preloader.min.css') }}" />
     <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}" />
@@ -210,7 +211,6 @@
     <div class="rightbar-overlay"></div>
 
     <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
     <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
     <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
     <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>

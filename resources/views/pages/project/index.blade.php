@@ -8,38 +8,30 @@
 
 @push('css')
     <style>
-        .myClass{
-            padding: 0.25rem 0.5rem !important;
+        .selectClass{
+            width: 55%;
+            margin-left: 6.7rem;
         }
     </style>
 @endpush
 
 <div class="row">
-    <form action="">
-        <div class="d-flex justify-content-end">
-            <div style="margin-right: 1rem; " class="mb-3 col-md-2">
-                <select class="form-control myClass " data-trigger name="choices-single-default"
-                placeholder="Search Project">
+    <div class="d-flex justify-content-end">
+        {{-- <div class="col-md-1 mt-2">
+        </div> --}}
+        <p  class="col-md-1 mt-2">Search : </p>
+        <div style="margin-right: 1rem; " class="mb-3 col-md-2">
+            <select name="project_type" class="form-control selectClass">
                 <option value="">Project Type</option>
-                    <option value="Choice 1">Choice 1</option>
-                    <option value="Choice 2">Choice 2</option>
-                    <option value="Choice 3">Choice 3</option>
-                </select>
-            </div>
-            <div class="ml-2">
-
-                <button class="btn btn-sm btn-primary">Find</button>
-            </div>
-
+                @if ( isset($projectType) && is_object($projectType))
+                    @foreach ( $projectType as $each )
+                        <option value="{{ $each->project_type }}">{{ $each->project_type }}</option>
+                    @endforeach
+                @endif
+            </select>
         </div>
-    </form>
-    <form method="POST" action="{{ route('project.sync') }}">
-        @csrf
-        <div class="ml-2">
-            <button class="btn btn-sm btn-primary">Sync</button>
-        </div>
+    </div>
 
-    </form>
     <div class="col-12">
         <div class="card">
             <div class="card-body">
@@ -55,7 +47,7 @@
                         </tr>
                     </thead>
 
-                    <tbody>
+                    <tbody id="projectList">
                         @if ( ! empty($projects) )
                             @foreach ($projects as $each)
                                 <tr>
@@ -77,5 +69,42 @@
         </div>
     </div>
 </div>
+
+@push('script')
+
+    <script type="text/javascript">
+        $( document ).ready(function() {
+
+            $( document ).on('change', '[name="project_type"]', function(event){
+
+                let projectType = $('[name="project_type"]').val();
+                $.ajax({
+                    url     : "{{ route('project.load') }}",
+                    method  : "POST",
+                    data    : {
+                        "_token"    : "{{ csrf_token() }}",
+                        projectType : projectType ,
+                    },
+                    success: function( data ){
+                        let post = '';
+                        $.each( data , function( index, value){
+                            post += `<tr>
+                                    <td><input type="checkbox" name="projectID" class="form-check-input" /></td>
+                                    <td><a href="https://ollyo.atlassian.net/browse/${value.project_key}" target="_blank"><span class="inv-number">#${value.project_id}</span></a></td>
+                                    <td>${value.project_name }</td>
+                                    <td><span class="badge bg-success">${value.project_key}</span></td>
+                                    <td><span class="badge bg-dark">${value.project_type}</span></td>
+                                    <td>
+                                        <button type="submit" class="btn btn-sm btn-soft-dark">${value.project_status_on_pmo}</button>
+                                    </td>
+                                </tr>`;
+                        });
+                        $('#projectList').html(post);
+                    }
+                })
+            });
+        });
+    </script>
+@endpush
 
 @endsection
