@@ -31,19 +31,31 @@ class DailyTaskRepository extends JiraApiRepository
      */
     public function updateAllDailyTask() {
 
-        $sql = " SELECT `project_key` from `projects` where `last_sync` <= DATE_SUB(NOW(), INTERVAL 5 MINUTE) ";
+        $sql = " SELECT `project_key` FROM `projects` WHERE `last_sync` <= DATE_SUB(NOW(), INTERVAL 1 MINUTE) LIMIT 1, 1";
+        $projectKeys = DB::select($sql);
+        
+        if ( empty($projectKeys) ) {
+            $sql = " SELECT `project_key` FROM `projects` WHERE `last_sync` IS NULL LIMIT 1, 1";
+        }
         $projectKeys = DB::select($sql);
 
-        $$newTask = [];
-        foreach ($projectKeys as $eachKey) {
+        $newTask = [];
 
             # Parse the full url to fetch every task for single project
-            $url = $this->finalUrl . $eachKey->project_key;
+            $url = $this->finalUrl . $projectKeys[0]->project_key;
+
             $response = $this->getJiraApiResponse($this->email, $this->password, $url);
 
-            if (isset($response->issues)) {
+            if ( isset( $response->errorMessages ) && str_contains($response->errorMessages[0], "does not exist for the field 'project'") ) {
+                echo $url . '<br/>';
+                Project::where('project_key', $projectKeys[0]->project_key )->update(['last_sync' => now()->toDateTimeString()]);
+            } else {
+
                 foreach ($response->issues as $issue) {
 
+                    echo "<pre>";
+                    print_r( $issue );
+                    echo "</pre>";
                     #get the active sprint value
                     if (isset($issue->fields->customfield_10020) && !empty($issue->fields->customfield_10020)) {
                         foreach ($issue->fields->customfield_10020 as $key => $fields) {
@@ -70,10 +82,10 @@ class DailyTaskRepository extends JiraApiRepository
                         $oldDailyTask->assignee         = $issue->fields->assignee->displayName ?? 'No One Assigned';
                         $oldDailyTask->task_start_date  = $startDate ?? null;
                         $oldDailyTask->task_end_date    = $endDate ?? null;
-                        $oldDailyTask->updated_at       = date('Y-m-d H:i:s');
+                        $oldDailyTask->updated_at       = now()->toDateTimeString();
                         $oldDailyTask->save();
 
-                        Project::where('project_key', $eachKey->project_key )->update(['last_sync' => now()]);
+                        Project::where('project_key', $projectKeys[0]->project_key )->update(['last_sync' => now()->toDateTimeString()]);
 
                     } else {
 
@@ -90,11 +102,11 @@ class DailyTaskRepository extends JiraApiRepository
                             'task_end_date'     => $endDate ?? null,
                             'created_at'        => now()->toDateTimeString(),
                         ];
-                        Project::insert(['last_sync' => now()]);
+                        Project::where('project_key', $projectKeys[0]->project_key )->update(['last_sync' => now()->toDateTimeString()]);
                     }
                 }
             }
-        }
+
         DailyTask::insert($newTask);
 
     }
@@ -106,12 +118,12 @@ class DailyTaskRepository extends JiraApiRepository
      */
     public function deleteCompleteTask()
     {
-        DailyTask::where('task_status', '=', 'Done')->delete();
+        DailyTask::where('task_status', 'Done')->delete();
     }
 
     public function getDailyTaskReportViaAjaxCall( $group_name = null, $project_name = null, $project_status = null )
     {
-        $taskAssignee = Assignee::join('daily_tasks', 'daily_tasks.assignee_id', '=', 'assignees.account_id')
+        return $taskAssignee = Assignee::join('daily_tasks', 'daily_tasks.assignee_id', '=', 'assignees.account_id')
                             ->distinct('assignees.assignee_name')
                             ->where('assignees.account_type', 'atlassian')
                             ->select('assignees.assignee_name', 'assignees.group_name', 'daily_tasks.task_summary', 'daily_tasks.sprint_name', 'daily_tasks.project_name')

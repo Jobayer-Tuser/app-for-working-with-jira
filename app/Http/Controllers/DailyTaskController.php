@@ -28,7 +28,7 @@ class DailyTaskController extends Controller
 
     public function filterTask(Request $request)
     {
-        return $request;
+        // return $request;
         $tasks = $this->taskRepo->getDailyTaskReportViaAjaxCall( $request->group_name, $request->project_name, $request->project_status );
         return response()->json($tasks);
     }

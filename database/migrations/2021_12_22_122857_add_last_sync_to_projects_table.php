@@ -14,7 +14,7 @@ class AddLastSyncToProjectsTable extends Migration
     public function up()
     {
         Schema::table('projects', function (Blueprint $table) {
-            $table->time('last_sync')->nullable();
+            $table->datetime('last_sync')->nullable();
         });
     }
 

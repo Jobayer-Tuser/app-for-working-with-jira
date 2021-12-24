@@ -9,7 +9,9 @@ class Kernel extends ConsoleKernel
 {
 
     protected $commands = [
-        \App\Console\Commands\CreateDatabase::class
+        \App\Console\Commands\CreateDatabase::class,
+        \App\Console\Commands\UpdateDailyProject::class,
+        \App\Console\Commands\UpdateDailyTask::class,
     ];
 
     /**
@@ -20,11 +22,8 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('update:dailyproject')
-                ->everyMinute()
-                ->appendOutputTo('scheduler.log');
-
-        $schedule->command('update:dailytask')->everyFiveMinutes();
+        $schedule->command('update:dailyproject')->everyMinute();//->appendOutputTo('scheduler.log');
+        $schedule->command('update:dailytask')->everyMinute()->appendOutputTo('scheduler.log');
     }
 
     /**

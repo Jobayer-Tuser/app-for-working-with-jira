@@ -41,7 +41,7 @@ class UpdateDailyTask extends Command
     {
         $task = new DailyTaskRepository();
         try {
-            return $task->updateAllDailyTask();
+            $task->updateAllDailyTask();
         } catch ( Exception $error ){
             echo $error->getMessage();
         }
