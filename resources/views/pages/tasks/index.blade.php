@@ -67,77 +67,8 @@
 </div>
 
 <div class="row">
-    <div class="col-md-12">
-        <div class="card">
+    <div class="col-md-12" id="loadTask">
 
-            <div class="card-body">
-                <h1 class="card-title">Special title treatment</h1>
-                <span class="badge bg-success">Builder</span>
-                <span class="badge bg-success">Builder</span>
-                <span class="badge bg-success">Builder</span>
-            </div>
-
-            <div class="px-3">
-                <ul class="list-unstyled">
-                    <li class="">
-                        <div class="d-flex">
-                            <div class="font-size-20 text-success">
-                                <i class="bx bx-down-arrow-circle d-block"></i>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="">
-                        <div class="d-flex">
-                            <div class="font-size-20 text-success">
-                                <i class="bx bx-down-arrow-circle d-block"></i>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-            <div class="px-5">
-                <hr class="hrClass" />
-            </div>
-
-            <div class="card-body">
-                <span class="badge bg-success">Builder</span>
-                <span class="badge bg-success">Builder</span>
-                <span class="badge bg-success">Builder</span>
-            </div>
-
-            <div class="px-3">
-                <ul class="list-unstyled">
-                    <li class="">
-                        <div class="d-flex">
-                            <div class="font-size-20 text-success">
-                                <i class="bx bx-down-arrow-circle d-block"></i>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
-                            </div>
-                        </div>
-                    </li>
-                    <li class="">
-                        <div class="d-flex">
-                            <div class="font-size-20 text-success">
-                                <i class="bx bx-down-arrow-circle d-block"></i>
-                            </div>
-                            <div class="flex-grow-1 overflow-hidden">
-                                <p class="text-truncate text-muted font-size-14  description">Let say something together</p>
-                            </div>
-                        </div>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
     </div>
 </div>
 
@@ -147,6 +78,58 @@
     <script type="text/javascript">
 
         $( document ).ready(function() {
+
+            class RenderTaskList {
+
+                constructor( param ){
+                    this.data = param;
+                }
+
+                renderEvent ( ) {
+                    $('#loadTask').html( this.template() );
+                }
+
+                template() {
+                    let mainMarkup = '';
+
+                    this.data.map((value, key)=>{
+                            mainMarkup += `<div class="card">
+                                <h1 class="card-title ml-5 mt-3">${ value.name }</h1>`;
+                                value.details.map((value2, key)=>{
+
+                                            mainMarkup +=`
+                                            <div class="card-body">
+                                                <span class="badge bg-dark"> ${ value2.title } </span> <span class="badge bg-dark"> ${value2.sprint} </span>
+                                            </div>
+
+                                            <div class="px-3">
+                                                <ul class="list-unstyled">`;
+                                                    value2.task.map(( value3, key )=>{
+                                                        mainMarkup += `<li class="">
+                                                            <div class="d-flex">
+                                                                <div class="font-size-20 text-dark">
+                                                                    <i class="bx bx-down-arrow-circle d-block"></i>
+                                                                    </div>
+                                                                <div class="flex-grow-1 overflow-hidden">
+                                                                    <p class="text-truncate text-muted font-size-14  description"> ${ value3 }</p>
+                                                                </div>
+                                                                </div>
+                                                        </li>`
+                                                    });
+                                    mainMarkup +=`</ul>
+                                        </div>
+                                        <div class="px-5">
+                                            <hr class="hrClass" />
+                                        </div>`
+
+                                    })
+                                    mainMarkup +=`</div>`;
+                                });
+                                return mainMarkup;
+                    if ( this.data == 'object' && this.data > 0 ){
+                    }
+                }
+            }
 
             loadTask();
 
@@ -161,11 +144,8 @@
                         project_status  : project_status,
                     },
                     success: function( data ){
-                            console.log(data);
-                        let post = '';
-                        $.each( data , function( index, value ){
-                        });
-                        $('#projectList').html(post);
+                        const app = new RenderTaskList(data)
+			            app.renderEvent();
                     }
                 })
             }

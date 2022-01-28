@@ -1,0 +1,29 @@
+{
+	"folders": [
+		{
+			"path": "../../../tutor"
+		},
+		{
+			"path": "../.."
+		},
+		{
+			"path": "../../../helpscout"
+		},
+		{
+			"path": "../../../tutorv2"
+		},
+		{
+			"path": "../../../skillate"
+		},
+		{
+			"path": "../../../../All Project/React_App/react-crud"
+		},
+		{
+			"path": "../../../../All Project/React_App/react-quiz-app"
+		}
+	],
+	"settings": {
+		"java.dependency.packagePresentation": "hierarchical",
+		"java.configuration.updateBuildConfiguration": "automatic"
+	}
+}

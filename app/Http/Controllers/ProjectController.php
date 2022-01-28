@@ -17,6 +17,7 @@ class ProjectController extends Controller
 
     public function index(Request $request)
     {
+        // return $this->proRepo->updateEveryProject();
         $value = $this->proRepo->fetchAllProjectsFromDB( $request->project_type );
         $data  = [
             'projects'    => $value['projects'],
@@ -27,10 +28,9 @@ class ProjectController extends Controller
 
     public function update(Request $request)
     {
-        $status = $this->proRepo->updateProjectStautus( $request->project_status, $request->project_id );
-        if ( $status > 0 ){
-            return redirect(route('project.list'));
-        }
+        // return $request;
+        $status = $this->proRepo->updateProjectStautus( $request->projectStat, $request->id );
+        return response()->json($status);
     }
 
     public function getGroup()
@@ -46,6 +46,8 @@ class ProjectController extends Controller
     public function loadProject( Request $request )
     {
         $project = $this->proRepo->loadProjectVaiAajaxCall($request->projectType);
+
+
         return response()->json($project);
     }
 }

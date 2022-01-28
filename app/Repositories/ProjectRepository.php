@@ -149,7 +149,7 @@ class ProjectRepository extends JiraApiRepository
         Assignee::insert($userInfo);
     }
 
-    public function loadProjectVaiAajaxCall( $project_type )
+    public function loadProjectVaiAajaxCall( $project_type = null )
     {
         $query = Project::query();
         if ( !empty( $project_type ) ) {

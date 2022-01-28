@@ -17,8 +17,6 @@
 
 <div class="row">
     <div class="d-flex justify-content-end">
-        {{-- <div class="col-md-1 mt-2">
-        </div> --}}
         <p  class="col-md-1 mt-2">Search : </p>
         <div style="margin-right: 1rem; " class="mb-3 col-md-2">
             <select name="project_type" class="form-control selectClass">
@@ -48,20 +46,7 @@
                     </thead>
 
                     <tbody id="projectList">
-                        @if ( ! empty($projects) )
-                            @foreach ($projects as $each)
-                                <tr>
-                                    <td><input type="checkbox" name="projectID" class="form-check-input" /></td>
-                                    <td><a href="https://ollyo.atlassian.net/browse/{{ $each->project_key }}" target="_blank"><span class="inv-number">#{{ $each->project_id }}</span></a></td>
-                                    <td>{{ $each->project_name }}</td>
-                                    <td><span class="badge bg-success">{{ $each->project_key }}</span></td>
-                                    <td><span class="badge bg-dark">{{ $each->project_type }}</span></td>
-                                    <td>
-                                        <button type="submit" class="btn btn-sm btn-soft-dark">{{ $each->project_status_on_pmo }}</button>
-                                    </td>
-                                </tr>
-                            @endforeach
-                        @endif
+
                     </tbody>
                 </table>
                 {{-- {{ $projects->links() }} --}}
@@ -74,20 +59,48 @@
 
     <script type="text/javascript">
         $( document ).ready(function() {
+            loadProject();
 
             $( document ).on('change', '[name="project_type"]', function(event){
-
                 let projectType = $('[name="project_type"]').val();
+                loadProject(projectType);
+            });
+
+            $( document ).on('click', '[name="changeProjectStat"]', function(event){
+
+                event.preventDefault();
+                let projectStat = $(this).data('value');
+                let id = $(this).data('id');
+
+                $.ajax({
+                    url     : "{{ route('project.update.status') }}",
+                    method  : "POST",
+                    data    : {
+                        "_token"    : "{{ csrf_token() }}",
+                        projectStat : projectStat,
+                        id : id
+                    },
+                    success: function( data ){
+                        console.log(data);
+                        if ( data == true ){
+                            loadProject();
+                        }
+                    }
+                })
+            });
+
+
+            function loadProject(project_type = null) {
                 $.ajax({
                     url     : "{{ route('project.load') }}",
                     method  : "POST",
                     data    : {
                         "_token"    : "{{ csrf_token() }}",
-                        projectType : projectType ,
+                        projectType : project_type ,
                     },
                     success: function( data ){
                         let post = '';
-                        $.each( data , function( index, value){
+                        $.each( data , function( index, value ){
                             post += `<tr>
                                     <td><input type="checkbox" name="projectID" class="form-check-input" /></td>
                                     <td><a href="https://ollyo.atlassian.net/browse/${value.project_key}" target="_blank"><span class="inv-number">#${value.project_id}</span></a></td>
@@ -95,14 +108,14 @@
                                     <td><span class="badge bg-success">${value.project_key}</span></td>
                                     <td><span class="badge bg-dark">${value.project_type}</span></td>
                                     <td>
-                                        <button type="submit" class="btn btn-sm btn-soft-dark">${value.project_status_on_pmo}</button>
+                                        <button name="changeProjectStat" data-id="${value.project_id}" data-value="${value.project_status_on_pmo}" type="submit" class="btn btn-sm ${ value.project_status_on_pmo == 'Tracked' ? 'btn-success': 'btn-soft-dark' }">${value.project_status_on_pmo}</button>
                                     </td>
                                 </tr>`;
                         });
                         $('#projectList').html(post);
                     }
                 })
-            });
+            }
         });
     </script>
 @endpush

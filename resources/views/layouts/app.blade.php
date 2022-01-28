@@ -1,34 +1,14 @@
-
 <!DOCTYPE html>
 <!--
-    Author : JoomShaper -> Jobayer Al Mahmud Tuser
+    Author : JoomShaper -> Nirjhor Anjum | Jobayer Al Mahmud Tuser
     Company Websiste: http://joomshaper.com
     Author Website : http://jobayertuser.tk
 -->
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-<head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, shrink-to-fit=no">
-    <meta name="csrf-token" content="{{ csrf_token() }}">
-    {{-- <title> {{ config('app.name', "Hello")}} </title> --}}
-    <title> @yield('title') </title>
+    <head>
+        @include('inc._head')
+    </head>
 
-    <!-- BEGIN GLOBAL MANDATORY STYLES -->
-    <script src="{{ asset('assets/libs/jquery/jquery.min.js') }}"></script>
-    <link rel="shortcut icon" href="{{ asset('assets/images/favicon.ico') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/preloader.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/bootstrap.min.css') }}" />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/icons.min.css') }}"  />
-    <link rel="stylesheet" type="text/css" href="{{ asset('assets/css/app.min.css') }}"/>
-    <!-- END GLOBAL MANDATORY STYLES -->
-
-    <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-    @include('inc._extracss')
-    @stack('css')
-    <!-- END PAGE LEVEL PLUGINS/CUSTOM STYLES -->
-
-</head>
 <body>
 
     <!-- Begin page -->
@@ -209,19 +189,9 @@
 
     <!-- Right bar overlay-->
     <div class="rightbar-overlay"></div>
-
-    <!-- BEGIN GLOBAL MANDATORY SCRIPTS -->
-    <script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/metismenu/metisMenu.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/simplebar/simplebar.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/node-waves/waves.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/feather-icons/feather.min.js') }}"></script>
-    <script src="{{ asset('assets/libs/pace-js/pace.min.js') }}"></script>
-    <script src="{{ asset('assets/js/app.js') }}"></script>
-    <!-- END GLOBAL MANDATORY SCRIPTS -->
+    @include('inc._extrajs')
 
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
-    @include('inc._extrajs')
     @stack('script');
     <!-- BEGIN PAGE LEVEL PLUGINS/CUSTOM SCRIPTS -->
 </body>

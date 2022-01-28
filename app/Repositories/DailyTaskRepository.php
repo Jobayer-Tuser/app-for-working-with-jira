@@ -29,86 +29,78 @@ class DailyTaskRepository extends JiraApiRepository
      *
      * @return void
      */
-    public function updateAllDailyTask() {
+    public function updateAllDailyTask()
+    {
+        $sql = "SELECT `project_key` FROM `projects` WHERE `last_sync` IS NULL OR `project_status_on_pmo` = 'Tracked'  LIMIT 1";
 
-        $sql = " SELECT `project_key` FROM `projects` WHERE `last_sync` <= DATE_SUB(NOW(), INTERVAL 1 MINUTE) LIMIT 1, 1";
-        $projectKeys = DB::select($sql);
-        
-        if ( empty($projectKeys) ) {
-            $sql = " SELECT `project_key` FROM `projects` WHERE `last_sync` IS NULL LIMIT 1, 1";
+        if (!$projectKeys = DB::select($sql)) {
+            $sql = "SELECT `project_key` FROM `projects` WHERE `last_sync` = (SELECT MIN(`last_sync`) FROM `projects`) AND `project_status_on_pmo` = 'Tracked' LIMIT 1";
+            $projectKeys = DB::select($sql);
         }
-        $projectKeys = DB::select($sql);
 
-        $newTask = [];
+        # Parse the full url to fetch every task for single project
+        $url = $this->finalUrl . $projectKeys[0]->project_key;
 
-            # Parse the full url to fetch every task for single project
-            $url = $this->finalUrl . $projectKeys[0]->project_key;
+        $response = $this->getJiraApiResponse($this->email, $this->password, $url);
 
-            $response = $this->getJiraApiResponse($this->email, $this->password, $url);
+        if (isset($response->errorMessages) && str_contains($response->errorMessages[0], "does not exist for the field 'project'")) {
+            Project::where('project_key', $projectKeys[0]->project_key)->update(['last_sync' => now()->toDateTimeString()]);
+        } else {
 
-            if ( isset( $response->errorMessages ) && str_contains($response->errorMessages[0], "does not exist for the field 'project'") ) {
-                echo $url . '<br/>';
-                Project::where('project_key', $projectKeys[0]->project_key )->update(['last_sync' => now()->toDateTimeString()]);
-            } else {
+            foreach ($response->issues as $issue) {
 
-                foreach ($response->issues as $issue) {
+                print_r($projectKeys[0]->project_key);
+                #get the active sprint value
+                if (isset($issue->fields->customfield_10020) && !empty($issue->fields->customfield_10020)) {
+                    foreach ($issue->fields->customfield_10020 as $key => $fields) {
+                        if ($fields->state == 'active') {
 
-                    echo "<pre>";
-                    print_r( $issue );
-                    echo "</pre>";
-                    #get the active sprint value
-                    if (isset($issue->fields->customfield_10020) && !empty($issue->fields->customfield_10020)) {
-                        foreach ($issue->fields->customfield_10020 as $key => $fields) {
-                            if ($fields->state == 'active') {
-
-                                $sprintName = $fields->name;
-                                $state      = $fields->state;
-                                $startDate  = $fields->startDate;
-                                $endDate    = $fields->endDate;
-                            }
+                            $sprintName = $fields->name;
+                            $state      = $fields->state;
+                            $startDate  = $fields->startDate;
+                            $endDate    = $fields->endDate;
                         }
                     }
-                    $oldDailyTask = DailyTask::where('project_key', $issue->fields->project->key)->first();
-
-                    #get the old daily task value and update them
-                    if (isset($oldDailyTask) && !empty($oldDailyTask)) {
-
-                        $oldDailyTask->project_key      = $issue->fields->project->key;
-                        $oldDailyTask->project_name     = $issue->fields->project->name;
-                        $oldDailyTask->sprint_name      = $sprintName ?? 'No Name';
-                        $oldDailyTask->task_status      = $issue->fields->status->name;
-                        $oldDailyTask->task_summary     = $issue->fields->summary;
-                        $oldDailyTask->assignee_id      = $issue->fields->assignee->accountId ?? 'No ID';
-                        $oldDailyTask->assignee         = $issue->fields->assignee->displayName ?? 'No One Assigned';
-                        $oldDailyTask->task_start_date  = $startDate ?? null;
-                        $oldDailyTask->task_end_date    = $endDate ?? null;
-                        $oldDailyTask->updated_at       = now()->toDateTimeString();
-                        $oldDailyTask->save();
-
-                        Project::where('project_key', $projectKeys[0]->project_key )->update(['last_sync' => now()->toDateTimeString()]);
-
-                    } else {
-
-                        $newTask [] = [
-                            'project_id'        => $issue->fields->project->id,
-                            'project_key'       => $issue->fields->project->key,
-                            'project_name'      => $issue->fields->project->name,
-                            'sprint_name'       => $sprintName ?? 'No Name',
-                            'task_status'       => $issue->fields->status->name,
-                            'task_summary'      => $issue->fields->summary,
-                            'assignee_id'       => $issue->fields->assignee->accountId ?? 'No ID',
-                            'assignee'          => $issue->fields->assignee->displayName ?? 'No One Assigned',
-                            'task_start_date'   => $startDate ?? null,
-                            'task_end_date'     => $endDate ?? null,
-                            'created_at'        => now()->toDateTimeString(),
-                        ];
-                        Project::where('project_key', $projectKeys[0]->project_key )->update(['last_sync' => now()->toDateTimeString()]);
-                    }
                 }
+                $oldDailyTask = DailyTask::where('project_key', $issue->fields->project->key)->first();
+
+                #get the old daily task value and update them
+                if (isset($oldDailyTask) && !empty($oldDailyTask)) {
+
+                    $oldDailyTask->project_id       = $issue->fields->project->id;
+                    $oldDailyTask->project_key      = $issue->fields->project->key;
+                    $oldDailyTask->project_name     = $issue->fields->project->name;
+                    $oldDailyTask->sprint_name      = $sprintName ?? 'No Name';
+                    $oldDailyTask->task_status      = $issue->fields->status->name;
+                    $oldDailyTask->task_summary     = $issue->fields->summary;
+                    $oldDailyTask->assignee_id      = $issue->fields->assignee->accountId ?? 'No ID';
+                    $oldDailyTask->assignee         = $issue->fields->assignee->displayName ?? 'No One Assigned';
+                    $oldDailyTask->task_start_date  = $startDate ?? null;
+                    $oldDailyTask->task_end_date    = $endDate ?? null;
+                    $oldDailyTask->updated_at       = now()->toDateTimeString();
+                    $oldDailyTask->save();
+                } else {
+
+                    $newTask = new DailyTask();
+
+                    $newTask->project_id        = $issue->fields->project->id;
+                    $newTask->project_key       = $issue->fields->project->key;
+                    $newTask->project_name      = $issue->fields->project->name;
+                    $newTask->sprint_name       = $sprintName ?? 'No Name';
+                    $newTask->task_status       = $issue->fields->status->name;
+                    $newTask->task_summary      = $issue->fields->summary;
+                    $newTask->assignee_id       = $issue->fields->assignee->accountId ?? 'No ID';
+                    $newTask->assignee          = $issue->fields->assignee->displayName ?? 'No One Assigned';
+                    $newTask->task_start_date   = $startDate ?? null;
+                    $newTask->task_end_date     = $endDate ?? null;
+                    $newTask->created_at        = now()->toDateTimeString();
+                    $newTask->save();
+
+                }
+
+                Project::where('project_key', $projectKeys[0]->project_key)->update(['last_sync' => now()->toDateTimeString()]);
             }
-
-        DailyTask::insert($newTask);
-
+        }
     }
 
     /**
@@ -121,13 +113,83 @@ class DailyTaskRepository extends JiraApiRepository
         DailyTask::where('task_status', 'Done')->delete();
     }
 
-    public function getDailyTaskReportViaAjaxCall( $group_name = null, $project_name = null, $project_status = null )
+    public function getDailyTaskReportViaAjaxCall($group_name = null, $project_name = null, $project_status = null): array
     {
-        return $taskAssignee = Assignee::join('daily_tasks', 'daily_tasks.assignee_id', '=', 'assignees.account_id')
-                            ->distinct('assignees.assignee_name')
-                            ->where('assignees.account_type', 'atlassian')
-                            ->select('assignees.assignee_name', 'assignees.group_name', 'daily_tasks.task_summary', 'daily_tasks.sprint_name', 'daily_tasks.project_name')
-                            ->get();
+        return $this->finalTask($group_name, $project_name, $project_status);
+    }
 
+    public function assigneName()
+    {
+        return $assigne = Assignee::select('assignee_name', 'account_id')->where('account_type', 'atlassian')->distinct()->get();
+    }
+
+    public function projectDetails($assigneId)
+    {
+        return $projectName = DailyTask::select('project_name', 'project_id')
+            ->where('assignee_id', $assigneId)
+            ->distinct('project_name')
+            ->get();
+    }
+
+    public function taskSummary($project_id)
+    {
+        return DailyTask::select('task_summary')
+            ->where('project_id', $project_id)
+            ->get();
+    }
+
+    public function sprintName($project_id)
+    {
+        return DailyTask::select('sprint_name')
+            ->where('project_id', $project_id)
+            ->distinct('sprint_name')
+            ->get();
+    }
+
+    public function finalTask( $group_name, $project_name, $project_status ): array
+    {
+        $array = [];
+        $assignename = $this->assigneName();
+        foreach ($assignename as $each) {
+
+            $accountid      = $each->account_id;
+            $projectDetail  = $this->projectDetails($accountid);
+            $objToArray     = json_decode(json_encode($projectDetail), true);
+            $projectId      = array_map(fn ($index) => $index['project_id'], $objToArray);
+            $projectList    = array_map(fn ($index) => $this->taskSummary($index), $projectId);
+            $sprintName     = array_map(fn ($index) => $this->sprintName($index), $projectId);
+
+            $taskSum = array_map(fn ($index) => array_map(
+                fn ($title) => $title['task_summary'],
+                $index
+            ), json_decode(json_encode($projectList), true));
+
+            $sprName = array_map(fn ($index) => array_map(
+                fn ($title) => $title['sprint_name'],
+                $index
+            ), json_decode(json_encode($sprintName), true));
+
+            $title = array_map(fn ($index) => $index['project_name'], $objToArray);
+            $sprint = array_map(fn ($index) => $index[0], $sprName);
+
+            $array[] = [
+                'name' => $each->assignee_name,
+                'details' => $this->mergeProjectArray($title, $sprint, $taskSum)
+            ];
+        }
+        return $array;
+    }
+
+    private function mergeProjectArray(array $title, array $sprint, array $task): array
+    {
+        $result = [];
+        for ($i = 0, $j = count($title); $i < $j; $i++) {
+            $result[$i] = [
+                'title'     => $title[$i],
+                'sprint'    => $sprint[$i],
+                'task'      => $task[$i],
+            ];
+        }
+        return $result;
     }
 }

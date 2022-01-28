@@ -346,3 +346,24 @@
 @endpush
 
 
+
+
+@if ( ! empty($projects) )
+                            @foreach ($projects as $each)
+                                <tr>
+                                    <td><input type="checkbox" name="projectID" class="form-check-input" /></td>
+                                    <td><a href="https://ollyo.atlassian.net/browse/{{ $each->project_key }}" target="_blank"><span class="inv-number">#{{ $each->project_id }}</span></a></td>
+                                    <td>{{ $each->project_name }}</td>
+                                    <td><span class="badge bg-success">{{ $each->project_key }}</span></td>
+                                    <td><span class="badge bg-dark">{{ $each->project_type }}</span></td>
+                                    <td>
+                                        <div class="square-switch">
+                                            <input type="checkbox" id="square-switch1" switch="none" checked />
+                                            <label for="square-switch1" data-on-label="On"
+                                                data-off-label="Off"></label>
+                                        </div>
+                                        <button type="submit" class="btn btn-sm btn-soft-dark">{{ $each->project_status_on_pmo }}</button>
+                                    </td>
+                                </tr>
+                            @endforeach
+                        @endif
