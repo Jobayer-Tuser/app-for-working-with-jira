@@ -31,25 +31,37 @@ class DailyTaskRepository extends JiraApiRepository
      */
     public function updateAllDailyTask()
     {
-        $sql = "SELECT `project_key` FROM `projects` WHERE `last_sync` IS NULL OR `project_status_on_pmo` = 'Tracked'  LIMIT 1";
+        $projectKeys = Project::select('project_key')
+                        ->whereNull('last_sync')
+                        ->orWhere('project_status_on_pmo', 'Untracked')
+                        ->take(1)
+                        ->get();
 
-        if (!$projectKeys = DB::select($sql)) {
-            $sql = "SELECT `project_key` FROM `projects` WHERE `last_sync` = (SELECT MIN(`last_sync`) FROM `projects`) AND `project_status_on_pmo` = 'Tracked' LIMIT 1";
-            $projectKeys = DB::select($sql);
+        if ( ! isset($projectKeys) ) {
+        return $projectKeys = Project::select('project_key')
+                        ->orWhere('project_status_on_pmo', 'Untracked')
+                        ->where('last_sync', 'SELECT MIN(last_sync)')
+                        ->take(1)
+                        ->get();
+
         }
 
+        // $sql = "SELECT `project_key` FROM `projects` WHERE `last_sync` = (SELECT MIN(`last_sync`) FROM `projects`) OR `project_status_on_pmo` = 'Untracked' LIMIT 1";
+
         # Parse the full url to fetch every task for single project
+        // $url = $this->finalUrl . 'TUTOR2';
         $url = $this->finalUrl . $projectKeys[0]->project_key;
 
         $response = $this->getJiraApiResponse($this->email, $this->password, $url);
 
         if (isset($response->errorMessages) && str_contains($response->errorMessages[0], "does not exist for the field 'project'")) {
+
             Project::where('project_key', $projectKeys[0]->project_key)->update(['last_sync' => now()->toDateTimeString()]);
+
         } else {
 
             foreach ($response->issues as $issue) {
 
-                print_r($projectKeys[0]->project_key);
                 #get the active sprint value
                 if (isset($issue->fields->customfield_10020) && !empty($issue->fields->customfield_10020)) {
                     foreach ($issue->fields->customfield_10020 as $key => $fields) {
@@ -146,7 +158,7 @@ class DailyTaskRepository extends JiraApiRepository
             ->get();
     }
 
-    public function finalTask( $group_name, $project_name, $project_status ): array
+    public function finalTask( $group_name = null, $project_name = null, $project_status = null): array
     {
         $array = [];
         $assignename = $this->assigneName();
@@ -191,5 +203,34 @@ class DailyTaskRepository extends JiraApiRepository
             ];
         }
         return $result;
+    }
+
+    public function structureArray()
+    {
+        return $this->finalTask();
+    }
+
+    public function loadTaskDetails()
+    {
+        return  DailyTask::join('assignees', 'assignees.account_id', '=', 'daily_tasks.assignee_id')
+                        ->select('daily_tasks.task_summary', 'daily_tasks.assignee', 'daily_tasks.project_name', 'daily_tasks.sprint_name')
+                        // ->distinct('assignee')
+                        ->get();
+    }
+
+    public function letsMergeArray()
+    {
+        $array = [];
+        $sum = [];
+        return $taskDetails = $this->loadTaskDetails();
+        foreach ( $taskDetails as $taskDetail) {
+            $array['sum'] = $taskDetail->task_summary;
+        }
+        return $array;
+
+        /*$array[] = [
+            'name' => $taskDetail->assignee,
+            'details' => $this->mergeProjectArray($taskDetail->project_name, $taskDetail->sprint_name, $taskDetail->task_summary)
+        ];*/
     }
 }

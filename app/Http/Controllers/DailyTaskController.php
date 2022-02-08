@@ -18,8 +18,6 @@ class DailyTaskController extends Controller
 
     public function index()
     {
-        // return $this->taskRepo->updateAllDailyTask();
-        // return $this->taskRepo->getDailyTaskReportViaAjaxCall();
         $value = $this->taskRepo->getAllTask();
         $data = [
             'groups'      => $value['groups'],
@@ -32,7 +30,7 @@ class DailyTaskController extends Controller
     public function filterTask(Request $request)
     {
         $tasks = $this->taskRepo->getDailyTaskReportViaAjaxCall( $request->group_name, $request->project_name, $request->project_status );
-        // return $request; 
+        // return $request;
         return response()->json($tasks);
 
     }
@@ -81,5 +79,18 @@ class DailyTaskController extends Controller
             $taskList .='</div>';
         }
         return $taskList;
+    }
+
+    public function taskArray()
+    {
+        return $this->taskRepo->structureArray();
+    }
+
+    public function loadTaskArray()
+    {
+        return $this->taskRepo->letsMergeArray();
+        // return $this->taskRepo->loadTaskDetails();
+        // return $this->taskRepo->getDailyTaskReportViaAjaxCall();
+
     }
 }

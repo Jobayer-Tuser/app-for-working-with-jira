@@ -39,6 +39,9 @@ use App\Models\DailyTask;
 
     #task route
     Route::get('task', [DailyTaskController::class, 'index'])->name('task.list');
+    Route::get('task/struc', [DailyTaskController::class, 'taskArray'])->name('task.list');
+    Route::get('task/deta', [DailyTaskController::class, 'loadTaskArray'])->name('task.list');
+
     Route::post('filter/task', [DailyTaskController::class, 'filterTask'])->name('task.load');
 
     Route::get('group', [ProjectController::class, 'getGroup']);
